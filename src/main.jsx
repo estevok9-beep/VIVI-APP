@@ -20,7 +20,6 @@ import AuthForm from "./auth/AuthForm.jsx";
 
 import AdminPanel from "./Admin/AdminPanel.jsx";
 import Configuracoes from "./configuracoes/Configuracoes.jsx";
-import Assinaturas from "./assinaturas/Assinaturas.jsx";
 
 import { supabase } from "./supabase.js";
 
@@ -483,11 +482,11 @@ function MenuIcon({ name }) {
     dashboard: <><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></>,
     admin: <><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" /><path d="m9 12 2 2 4-4" /></>,
     settings: <><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" /><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2 2-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.05 1.56V21h-2.82v-.1a1.7 1.7 0 0 0-1.05-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-2-2 .06-.06A1.7 1.7 0 0 0 7.4 15a1.7 1.7 0 0 0-1.56-1.05H5v-2.82h.84A1.7 1.7 0 0 0 7.4 10a1.7 1.7 0 0 0-.34-1.88L7 8.06l2-2 .06.06A1.7 1.7 0 0 0 11 6.46a1.7 1.7 0 0 0 1.05-1.56V4h2.82v.9A1.7 1.7 0 0 0 15.92 6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2 2-.06.06A1.7 1.7 0 0 0 19.46 10a1.7 1.7 0 0 0 1.56 1.05H22v2.82h-.98A1.7 1.7 0 0 0 19.4 15Z" transform="translate(-.5 -.5)" /></>,
-    nova: <><path d="M12 5v14M5 12h14" /><circle cx="12" cy="12" r="9" /></>,
-    historico: <><path d="M4 7h16M4 12h16M4 17h16" /><circle cx="6" cy="7" r="1" /></>,
-    categorias: <><path d="m3 12 9-9h8v8l-9 9-8-8Z" /><circle cx="16" cy="8" r="1" /></>,
-    metas: <><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="5" /><circle cx="12" cy="12" r="1" /></>,
-    relatorios: <><path d="M4 20V10M10 20V4M16 20v-8M22 20V7" /></>,
+    add: <><circle cx="12" cy="12" r="9" /><path d="M12 8v8M8 12h8" /></>,
+    transactions: <><path d="M4 7h16l-4-4m4 4-4 4M20 17H4l4-4m-4 4 4 4" /></>,
+    categories: <><path d="M3 5h8l10 10-6 6L5 11V5Z" /><circle cx="8" cy="8" r="1" /></>,
+    goals: <><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="5" /><circle cx="12" cy="12" r="1" /></>,
+    reports: <><path d="M4 20V10m6 10V4m6 16v-8m4 8V7" /></>,
     logout: <><path d="M10 17l5-5-5-5M15 12H3" /><path d="M12 3h6a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-6" /></>
   };
   return <svg className="viv-nav-icon" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
@@ -495,7 +494,7 @@ function MenuIcon({ name }) {
 
 function Viv() {
 
-  const [menuExpandido, setMenuExpandido] = useState(() => window.innerWidth > 700);
+  const [menuExpandido, setMenuExpandido] = useState(() => typeof window !== "undefined" && window.innerWidth > 700);
   const [paginaFinanceira, setPaginaFinanceira] = useState("inicio");
   const [usuario, setUsuario] =
 
@@ -1113,25 +1112,24 @@ function Viv() {
         <nav className="viv-sidebar-nav" aria-label="Navegação">
           {[
             ["inicio", "dashboard", "Painel financeiro"],
-            ["nova", "nova", "Nova transação"],
-            ["historico", "historico", "Transações"],
-            ["categorias", "categorias", "Categorias"],
-            ["metas", "metas", "Metas financeiras"],
-            ["relatorios", "relatorios", "Relatórios"]
-          ].map(([id, icone, rotulo]) => (
+            ["nova", "add", "Nova transação"],
+            ["historico", "transactions", "Transações"],
+            ["categorias", "categories", "Categorias"],
+            ["metas", "goals", "Metas financeiras"],
+            ["relatorios", "reports", "Relatórios"]
+          ].map(([id, icone, titulo]) => (
             <button key={id} type="button"
               className={`viv-nav-item ${tela === "financeiro" && paginaFinanceira === id ? "viv-nav-item--active" : ""}`}
-              title={rotulo} aria-label={rotulo}
+              title={titulo} aria-label={titulo}
               aria-current={tela === "financeiro" && paginaFinanceira === id ? "page" : undefined}
               onClick={() => { setTela("financeiro"); setPaginaFinanceira(id); }}>
-              <MenuIcon name={icone} /><span className="viv-sidebar-label">{rotulo}</span>
+              <MenuIcon name={icone} /><span className="viv-sidebar-label">{titulo}</span>
             </button>
           ))}
-          <button type="button" className={`viv-nav-item ${tela === "assinaturas" ? "viv-nav-item--active" : ""}`} title="Assinaturas" aria-label="Assinaturas" onClick={() => setTela("assinaturas")}>
-            <MenuIcon name="admin" /><span className="viv-sidebar-label">Assinaturas</span>
-          </button>
           {administrador && (
-            <button type="button" className={`viv-nav-item ${tela === "admin" ? "viv-nav-item--active" : ""}`} title="Viv Admin" aria-label="Viv Admin" aria-current={tela === "admin" ? "page" : undefined} onClick={() => setTela("admin")}>
+            <button type="button" className={`viv-nav-item ${tela === "admin" ? "viv-nav-item--active" : ""}`}
+              title="Viv Admin" aria-label="Viv Admin" aria-current={tela === "admin" ? "page" : undefined}
+              onClick={() => setTela("admin")}>
               <MenuIcon name="admin" /><span className="viv-sidebar-label">Viv Admin</span>
             </button>
           )}
@@ -1148,12 +1146,10 @@ function Viv() {
       <main className="viv-shell-content" id="conteudo-principal">
         {tela === "configuracoes" ? (
           <Configuracoes usuario={usuario} />
-        ) : tela === "assinaturas" ? (
-          <Assinaturas />
         ) : tela === "admin" && administrador ? (
           <AdminPanel />
         ) : (
-          <App pagina={paginaFinanceira} onPaginaChange={setPaginaFinanceira} />
+          <App pagina={paginaFinanceira} setPagina={setPaginaFinanceira} />
         )}
       </main>
     </div>

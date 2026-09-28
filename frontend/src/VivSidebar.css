@@ -1,0 +1,27 @@
+/* Menu lateral Viv — sem alterar as regras do Supabase */
+.viv-shell { display:flex; min-height:100vh; width:100%; background:#081b2d; }
+.viv-sidebar { position:sticky; top:0; height:100vh; flex:0 0 230px; box-sizing:border-box; display:flex; flex-direction:column; background:#102438; border-right:1px solid #28516a; padding:18px 12px; transition:flex-basis .2s ease; z-index:10; }
+.viv-sidebar:not(.viv-sidebar--expanded) { flex-basis:72px; }
+.viv-sidebar-brand { display:flex; align-items:center; gap:11px; min-height:48px; margin:0 4px 25px; }
+.viv-brand-mark { display:grid; place-items:center; flex:0 0 35px; height:35px; border-radius:11px; color:#07271e; background:#29d7ae; font-size:24px; font-weight:900; }
+.viv-brand-name { font-size:23px; font-weight:800; color:#eafff8; }
+.viv-menu-toggle { margin-left:auto; border:0; background:transparent; color:#b7d4df; display:grid; place-items:center; cursor:pointer; padding:7px; border-radius:8px; }
+.viv-menu-toggle:hover,.viv-nav-item:hover { background:#1d4054; }
+.viv-sidebar-nav,.viv-sidebar-bottom { display:grid; gap:8px; }
+.viv-sidebar-bottom { margin-top:auto; padding-top:18px; border-top:1px solid #29495b; }
+.viv-nav-item { width:100%; min-height:46px; border:1px solid transparent; background:transparent; border-radius:11px; padding:10px 12px; color:#c5dbe4; cursor:pointer; text-align:left; display:flex; align-items:center; gap:13px; font:600 14px/1.3 system-ui,sans-serif; white-space:nowrap; }
+.viv-nav-item--active { background:#153e40; color:#4ae4c0; border-color:#298a78; }
+.viv-nav-icon { flex-shrink:0; }
+.viv-nav-exit { color:#ffabb5; }
+.viv-nav-exit:hover { background:#512b3d; }
+.viv-shell-content { flex:1; min-width:0; }
+.viv-sidebar:not(.viv-sidebar--expanded) .viv-sidebar-label { display:none; }
+.viv-sidebar:not(.viv-sidebar--expanded) .viv-sidebar-brand { margin:0 0 25px; flex-wrap:wrap; justify-content:center; }
+.viv-sidebar:not(.viv-sidebar--expanded) .viv-menu-toggle { margin:0; }
+.viv-sidebar:not(.viv-sidebar--expanded) .viv-nav-item { justify-content:center; padding:10px; }
+@media(max-width:700px) { .viv-sidebar { flex-basis:64px; padding:12px 6px; } .viv-sidebar.viv-sidebar--expanded { flex-basis:190px; } .viv-sidebar-brand { gap:6px; margin:0 0 16px; flex-wrap:wrap; justify-content:center; } .viv-sidebar--expanded .viv-sidebar-brand { flex-wrap:nowrap; } .viv-sidebar:not(.viv-sidebar--expanded) { flex-basis:64px; } .viv-nav-item { padding:10px 8px; gap:8px; } .viv-sidebar:not(.viv-sidebar--expanded) .viv-nav-item { padding:10px 4px; } }
+
+/* Menu retrátil com todas as telas financeiras */
+.viv-sidebar-nav { overflow-y:auto; overflow-x:hidden; min-height:0; }
+.viv-shell-content { overflow-x:hidden; }
+@media(max-width:700px) { .viv-sidebar { z-index:30; } .viv-shell-content { min-width:0; } }

@@ -1545,6 +1545,6 @@ button, input, select { touch-action: manipulation; }
 }
 @media (max-width: 360px) { .vivi-indicadores { grid-template-columns: 1fr; } }
 
-/* Navegação unificada: o menu pertence exclusivamente ao main.jsx */
-.viv-shell .vivi-financeiro { display:block; min-height:100vh; }
-.viv-shell .vivi-principal { width:100%; min-width:0; }
+/* Viv: a navegação agora é controlada pelo menu único de main.jsx. */
+.vivi-financeiro { display:block; min-height:100%; }
+.vivi-principal { max-width:1600px; width:100%; margin-inline:auto; }

@@ -1,0 +1,12 @@
+VIV 2.7 — ETAPA 1: INTERFACE E CHECKOUT DE TESTE
+
+1. Faça backup do frontend e preserve .env.local.
+2. Extraia o pacote na pasta frontend; ele inclui src/ e supabase/functions/.
+3. Supabase > Edge Functions: crie viv-criar-checkout e cole o conteúdo de supabase/functions/viv-criar-checkout/index.ts. Mantenha a verificação JWT habilitada.
+4. Edge Functions > Secrets: MERCADOPAGO_ACCESS_TOKEN já configurado; acrescente VIV_SITE_URL=https://viv-financas.vercel.app (confira seu domínio) e, SOMENTE QUANDO PRONTO PARA TESTAR, VIV_CHECKOUT_TESTE_ATIVO=true.
+5. Teste com contas fictícias, sem cobranças reais. Não coloque tokens no frontend.
+6. Na pasta frontend: npm.cmd install; npm.cmd run build; npm.cmd run dev.
+
+ATENÇÃO: Este pacote implementa a tela de planos e uma função de CHECKOUT DE TESTE AVULSO. Ainda NÃO implementa renovação recorrente, webhook, validação de pagamentos, banco de assinaturas nem liberação automática. NÃO publique a função para cobranças reais antes de concluir essas etapas. O sistema de convites existente permanece em vigor.
+
+Próxima etapa: tabelas de assinaturas/pagamentos com RLS, webhook validado e idempotente, fluxo de cartão recorrente e Pix de renovação manual, regras de teste gratuito e compatibilização com o sistema de convites.

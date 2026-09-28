@@ -1,0 +1,150 @@
+
+/* VIVI 2.0 - CATEGORIAS */
+
+.vivi-categorias {
+  display: grid;
+  gap: 24px;
+  width: 100%;
+  color: #f5f9ff;
+}
+
+.vivi-categorias * {
+  box-sizing: border-box;
+}
+
+.vivi-categorias .vivi-bloco {
+  padding: 28px;
+  border: 1px solid #29465e;
+  border-radius: 20px;
+  background: #102239;
+}
+
+.vivi-categorias h2,
+.vivi-categorias h3 {
+  color: #ffffff;
+}
+
+.vivi-categorias p {
+  color: #adc2d6;
+  line-height: 1.6;
+}
+
+.vivi-categorias form {
+  display: grid;
+  gap: 16px;
+  width: 100%;
+  max-width: 550px;
+  margin-top: 25px;
+}
+
+.vivi-categorias label {
+  color: #c5d9e9;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.vivi-categorias input,
+.vivi-categorias select {
+  width: 100%;
+  min-height: 46px;
+  padding: 12px;
+  border: 1px solid #36678a;
+  border-radius: 10px;
+  background: #0b2034;
+  color: #ffffff;
+  font-size: 15px;
+}
+
+.vivi-categorias input:focus,
+.vivi-categorias select:focus {
+  outline: none;
+  border-color: #00e59a;
+  box-shadow: 0 0 0 3px #00e59a20;
+}
+
+.vivi-categorias-cores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.vivi-categorias-cores button {
+  width: 38px;
+  height: 38px;
+  border: 3px solid #183248;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.vivi-categorias-cores button[aria-pressed="true"] {
+  border: 4px solid #ffffff;
+  box-shadow: 0 0 12px #ffffff40;
+}
+
+.vivi-categorias-item {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 0;
+  border-bottom: 1px solid #29445c;
+}
+
+.vivi-categorias-icone {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid #20bfff;
+  border-radius: 12px;
+  font-size: 25px;
+}
+
+.vivi-categorias-nome {
+  flex: 1;
+  min-width: 100px;
+  color: #ffffff;
+}
+
+.vivi-categorias button {
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.vivi-categorias button:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.vivi-categorias button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.vivi-categorias-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: #000b;
+}
+
+.vivi-categorias-modal-conteudo {
+  width: 100%;
+  max-width: 420px;
+  padding: 25px;
+  border: 1px solid #ff5877;
+  border-radius: 18px;
+  background: #102239;
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .vivi-categorias .vivi-bloco {
+    padding: 18px;
+  }
+
+  .vivi-categorias-item {
+    gap: 10px;
+  }
+}

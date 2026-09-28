@@ -95,7 +95,7 @@ function Lista({ registros, categorias }) {
   );
 }
 
-export default function App({ pagina = "inicio", onPaginaChange }) {
+export default function App({ pagina, setPagina }) {
   const [usuario, setUsuario] = useState(null);
   const [movimentacoes, setMovimentacoes] =
     useState([]);
@@ -104,7 +104,6 @@ export default function App({ pagina = "inicio", onPaginaChange }) {
 
   const [categoriaId, setCategoriaId] =
     useState("");
-  const setPagina = onPaginaChange || (() => {});
 
   const [tipo, setTipo] = useState("saida");
   const [descricao, setDescricao] =
