@@ -1,0 +1,297 @@
+
+/* VIVI ADMIN — Identidade visual */
+
+.vivi-admin {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: calc(100vh - 60px);
+  padding: 50px 22px 30px;
+  color: #f8fafc;
+  font-family: Inter, Arial, sans-serif;
+  background:
+    radial-gradient(
+      ellipse at 95% 15%,
+      rgba(0, 215, 145, 0.14),
+      transparent 35%
+    ),
+    radial-gradient(
+      ellipse at 0% 65%,
+      rgba(0, 120, 255, 0.10),
+      transparent 35%
+    ),
+    #0c131b;
+}
+
+.vivi-admin * {
+  box-sizing: border-box;
+}
+
+/* Cabeçalho */
+
+.admin-cabecalho {
+  text-align: center;
+  margin: 0 auto 48px;
+}
+
+.admin-etiqueta {
+  display: inline-block;
+  padding: 8px 16px;
+  border: 1px solid #1b715f;
+  border-radius: 30px;
+  color: #50e9c1;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  margin-bottom: 22px;
+}
+
+.admin-cabecalho h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(42px, 8vw, 78px);
+  font-weight: 900;
+  letter-spacing: 2px;
+  line-height: 1.15;
+}
+
+.admin-cabecalho h1 span {
+  background: linear-gradient(
+    110deg,
+    #1ec9ff,
+    #00e59a
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.admin-linha {
+  width: 110px;
+  height: 4px;
+  margin: 24px auto;
+  border-radius: 10px;
+  background: linear-gradient(
+    90deg,
+    #15bbfa,
+    #00e79d
+  );
+  box-shadow: 0 0 20px #00e79d70;
+}
+
+.admin-cabecalho p {
+  margin: 12px 0;
+  font-size: clamp(17px, 3vw, 23px);
+  color: #d1d9e3;
+}
+
+.admin-cabecalho small {
+  display: block;
+  margin-top: 20px;
+  color: #4ce6bc;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  line-height: 1.8;
+}
+
+/* Área dos módulos */
+
+.admin-modulos {
+  width: 100%;
+  max-width: 960px;
+  margin: auto;
+  display: grid;
+  gap: 22px;
+}
+
+.admin-cartao {
+  --destaque: #1ec9ff;
+  --brilho: rgba(30, 201, 255, 0.14);
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  overflow: hidden;
+  min-height: 210px;
+  padding: 32px;
+  border: 1px solid var(--destaque);
+  border-radius: 22px;
+  background:
+    radial-gradient(
+      ellipse at 100% 100%,
+      var(--brilho),
+      transparent 65%
+    ),
+    linear-gradient(
+      120deg,
+      #142134,
+      #101923
+    );
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.22),
+    inset 0 0 25px var(--brilho);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.admin-cartao:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.3),
+    0 0 24px var(--brilho);
+}
+
+.admin-cartao.azul {
+  --destaque: #20baff;
+  --brilho: rgba(0, 130, 255, 0.20);
+}
+
+.admin-cartao.roxo {
+  --destaque: #d64cff;
+  --brilho: rgba(184, 29, 255, 0.20);
+}
+
+.admin-cartao.dourado {
+  --destaque: #ffc63d;
+  --brilho: rgba(255, 166, 0, 0.17);
+}
+
+.admin-cartao.verde {
+  --destaque: #17e6a0;
+  --brilho: rgba(0, 214, 130, 0.17);
+}
+
+/* Ícones */
+
+.admin-icone {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 118px;
+  height: 118px;
+  border: 1px solid var(--destaque);
+  border-radius: 24px;
+  background: var(--brilho);
+  box-shadow: 0 0 30px var(--brilho);
+  font-size: 54px;
+}
+
+/* Conteúdo */
+
+.admin-conteudo {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-conteudo h2 {
+  margin: 0 0 8px;
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.admin-conteudo h3 {
+  margin: 0 0 10px;
+  color: #edf2f7;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.admin-conteudo p {
+  max-width: 540px;
+  margin: 0 0 17px;
+  color: #b8c4d3;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.admin-status {
+  display: inline-block;
+  max-width: 100%;
+  padding: 10px 15px;
+  border: 1px solid var(--destaque);
+  border-radius: 30px;
+  color: var(--destaque);
+  background: rgba(0, 0, 0, 0.22);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+/* Ícone decorativo de fundo */
+
+.admin-decoracao {
+  position: absolute;
+  right: 25px;
+  bottom: 0;
+  opacity: 0.09;
+  font-size: 130px;
+  pointer-events: none;
+  filter: grayscale(1);
+}
+
+/* Rodapé */
+
+.admin-rodape {
+  margin-top: 55px;
+  padding: 22px;
+  text-align: center;
+  color: #8093a3;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+/* Celulares */
+
+@media (max-width: 600px) {
+  .vivi-admin {
+    padding: 36px 15px 25px;
+  }
+
+  .admin-cabecalho {
+    margin-bottom: 35px;
+  }
+
+  .admin-cabecalho small {
+    letter-spacing: 1px;
+  }
+
+  .admin-cartao {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 24px;
+  }
+
+  .admin-icone {
+    width: 76px;
+    height: 76px;
+    border-radius: 18px;
+    font-size: 36px;
+  }
+
+  .admin-conteudo h2 {
+    font-size: 26px;
+  }
+
+  .admin-decoracao {
+    font-size: 95px;
+    right: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-cartao {
+    transition: none;
+  }
+
+  .admin-cartao:hover {
+    transform: none;
+  }
+}
