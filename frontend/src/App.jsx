@@ -97,6 +97,7 @@ function Lista({ registros, categorias }) {
 
 export default function App({ pagina = "inicio", onPaginaChange }) {
   const [usuario, setUsuario] = useState(null);
+  const [nomePerfil, setNomePerfil] = useState("");
   const [movimentacoes, setMovimentacoes] =
     useState([]);
   const [categorias, setCategorias] =
@@ -142,7 +143,8 @@ export default function App({ pagina = "inicio", onPaginaChange }) {
 
       const [
         resultadoCategorias,
-        resultadoMovimentacoes
+        resultadoMovimentacoes,
+        resultadoPerfil
       ] = await Promise.all([
         supabase
           .from("categorias")
@@ -156,10 +158,20 @@ export default function App({ pagina = "inicio", onPaginaChange }) {
           .eq("usuario_id", usuarioAtual.id)
           .order("criado_em", {
             ascending: false
-          })
+          }),
+
+        supabase
+          .from("viv_perfis")
+          .select("nome")
+          .eq("id", usuarioAtual.id)
+          .maybeSingle()
       ]);
 
       if (!ativo) return;
+
+      if (!resultadoPerfil.error) {
+        setNomePerfil(resultadoPerfil.data?.nome?.trim() || "");
+      }
 
       if (resultadoCategorias.error) {
         setMensagem(
@@ -412,6 +424,7 @@ export default function App({ pagina = "inicio", onPaginaChange }) {
   );
 
   const nome =
+    nomePerfil ||
     usuario?.user_metadata?.nome ||
     usuario?.email?.split("@")[0] ||
     "Usuário";

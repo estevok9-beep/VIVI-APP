@@ -948,7 +948,7 @@ export default function AdminPanel() {
       titulo: "Assinaturas",
       subtitulo: "Planos e pagamentos",
       descricao:
-        "Gerencie os futuros planos da Viv.",
+        "Gerencie os futuros planos da Vivi.",
       status: "Em desenvolvimento",
       cor: "dourado"
     },
@@ -975,11 +975,11 @@ export default function AdminPanel() {
           CENTRAL ADMINISTRATIVA
         </div>
         <h1>
-          Viv <span>ADMIN</span>
+          VIVI <span>ADMIN</span>
         </h1>
         <div className="admin-linha" />
         <p>
-          Central de gerenciamento da Viv
+          Central de gerenciamento da Vivi
         </p>
         <small>
           GERENCIE • CONTROLE • ACOMPANHE • EVOLUA
@@ -1052,7 +1052,7 @@ export default function AdminPanel() {
           </section>
         )}
       <footer className="admin-rodape">
-        Viv © {new Date().getFullYear()}
+        VIVI © {new Date().getFullYear()}
         {" • "}
         Infraestrutura e tecnologia
       </footer>

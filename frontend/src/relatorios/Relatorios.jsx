@@ -1,5 +1,9 @@
 
 import { useMemo, useState } from "react";
+import { supabase } from "../supabase";
+import * as XLSX from "xlsx";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 import "./Relatorios.css";
 
 const moeda = (valor) =>
@@ -13,6 +17,165 @@ export default function Relatorios({
   categorias = []
 }) {
   const [mes, setMes] = useState("todos");
+  const [apagando, setApagando] = useState(false);
+  const [mensagem, setMensagem] = useState("");
+  const [menuExportar, setMenuExportar] = useState(false);
+
+  function nomeCategoria(movimentacao) {
+    return (
+      categorias.find((c) => c.id === movimentacao.categoria_id)?.nome ||
+      "Sem categoria"
+    );
+  }
+
+  function periodoTexto() {
+    if (mes === "todos") return "Todo o período";
+    const [ano, numeroMes] = mes.split("-");
+    return `${numeroMes}/${ano}`;
+  }
+
+  function nomeArquivo(extensao) {
+    const periodo = mes === "todos" ? "todo-periodo" : mes;
+    return `relatorio-financeiro-vivi-${periodo}.${extensao}`;
+  }
+
+  async function exportarExcel() {
+    setMenuExportar(false);
+
+    if (!registros.length) {
+      setMensagem("Não há movimentações no período selecionado para exportar.");
+      return;
+    }
+
+    try {
+      const linhas = registros.map((m) => ({
+        Data: (m.data || m.criado_em || "").slice(0, 10),
+        Descrição: m.descricao || "",
+        Categoria: nomeCategoria(m),
+        Tipo: m.tipo === "entrada" ? "Entrada" : "Saída",
+        Valor: Number(m.valor || 0)
+      }));
+
+      const resumo = [
+        ["Relatório Financeiro - VIVI"],
+        ["Período", periodoTexto()],
+        [],
+        ["Resumo"],
+        ["Entradas", entradas],
+        ["Despesas", saidas],
+        ["Saldo", entradas - saidas],
+        [],
+        ["Movimentações"]
+      ];
+
+      const planilha = XLSX.utils.aoa_to_sheet(resumo);
+      XLSX.utils.sheet_add_json(planilha, linhas, {
+        origin: "A10",
+        skipHeader: false
+      });
+
+      planilha["!cols"] = [
+        { wch: 14 },
+        { wch: 34 },
+        { wch: 24 },
+        { wch: 14 },
+        { wch: 16 }
+      ];
+
+      const pasta = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(pasta, planilha, "Relatório");
+      XLSX.writeFile(pasta, nomeArquivo("xlsx"));
+      setMensagem("Planilha Excel gerada com sucesso.");
+    } catch (erro) {
+      console.error("Erro ao gerar Excel:", erro);
+      setMensagem("Não foi possível gerar o Excel.");
+    }
+  }
+
+  async function exportarPDF() {
+    setMenuExportar(false);
+
+    if (!registros.length) {
+      setMensagem("Não há movimentações no período selecionado para exportar.");
+      return;
+    }
+
+    try {
+      const doc = new jsPDF();
+      doc.setFontSize(18);
+      doc.text("Relatório Financeiro - VIVI", 14, 18);
+      doc.setFontSize(11);
+      doc.text(`Período: ${periodoTexto()}`, 14, 27);
+      doc.text(`Entradas: ${moeda(entradas)}`, 14, 36);
+      doc.text(`Despesas: ${moeda(saidas)}`, 14, 43);
+      doc.text(`Saldo: ${moeda(entradas - saidas)}`, 14, 50);
+
+      const corpo = registros.map((m) => [
+        (m.data || m.criado_em || "").slice(0, 10),
+        m.descricao || "",
+        nomeCategoria(m),
+        m.tipo === "entrada" ? "Entrada" : "Saída",
+        moeda(m.valor)
+      ]);
+
+      autoTable(doc, {
+        startY: 58,
+        head: [["Data", "Descrição", "Categoria", "Tipo", "Valor"]],
+        body: corpo,
+        styles: { fontSize: 8 },
+        headStyles: { fillColor: [33, 59, 80] }
+      });
+
+      doc.save(nomeArquivo("pdf"));
+      setMensagem("PDF gerado com sucesso.");
+    } catch (erro) {
+      console.error("Erro ao gerar PDF:", erro);
+      setMensagem("Não foi possível gerar o PDF.");
+    }
+  }
+
+  async function zerarRelatorio() {
+    if (!movimentacoes.length) {
+      setMensagem("Não há movimentações para apagar.");
+      return;
+    }
+
+    const confirmou = window.confirm(
+      "ATENÇÃO: esta ação apagará definitivamente todas as suas entradas, despesas e todo o histórico financeiro. Deseja continuar?"
+    );
+
+    if (!confirmou) return;
+
+    const confirmouNovamente = window.confirm(
+      "Esta exclusão não poderá ser desfeita. Confirma que deseja ZERAR TODO O RELATÓRIO?"
+    );
+
+    if (!confirmouNovamente) return;
+
+    setApagando(true);
+    setMensagem("");
+
+    try {
+      const { data, error: erroUsuario } = await supabase.auth.getUser();
+
+      if (erroUsuario || !data.user) {
+        throw new Error("Não foi possível identificar o usuário logado.");
+      }
+
+      const { error } = await supabase
+        .from("movimentacoes")
+        .delete()
+        .eq("usuario_id", data.user.id);
+
+      if (error) throw error;
+
+      setMensagem("Relatório zerado com sucesso.");
+      window.location.reload();
+    } catch (erro) {
+      setMensagem("Erro ao zerar relatório: " + erro.message);
+      setApagando(false);
+    }
+  }
 
   const meses = useMemo(() => {
     return [...new Set(
@@ -103,7 +266,39 @@ export default function Relatorios({
           </p>
         </div>
 
-        <label>
+        <div className="relatorios-acoes">
+          <div className="relatorios-exportar">
+            <button
+              type="button"
+              className="relatorios-exportar-botao"
+              onClick={() => setMenuExportar((aberto) => !aberto)}
+              disabled={registros.length === 0}
+            >
+              Exportar ▾
+            </button>
+
+            {menuExportar && (
+              <div className="relatorios-exportar-menu">
+                <button type="button" onClick={exportarExcel}>
+                  Excel (.xlsx)
+                </button>
+                <button type="button" onClick={exportarPDF}>
+                  PDF (.pdf)
+                </button>
+              </div>
+            )}
+          </div>
+
+          <button
+            type="button"
+            className="relatorios-zerar"
+            onClick={zerarRelatorio}
+            disabled={apagando || movimentacoes.length === 0}
+          >
+            {apagando ? "Zerando..." : "Zerar relatório"}
+          </button>
+
+          <label>
           Período
           <select
             value={mes}
@@ -119,8 +314,13 @@ export default function Relatorios({
               </option>
             ))}
           </select>
-        </label>
+          </label>
+        </div>
       </div>
+
+      {mensagem && (
+        <p className="relatorios-mensagem">{mensagem}</p>
+      )}
 
       <div className="relatorios-indicadores">
         <article className="relatorios-entrada">
