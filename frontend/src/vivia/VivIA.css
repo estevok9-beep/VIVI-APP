@@ -1,0 +1,195 @@
+.viv-ia-page {
+  width: 100%;
+  min-height: 100%;
+  padding: 28px;
+  box-sizing: border-box;
+}
+
+.viv-ia-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.viv-ia-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #6d5dfc, #8b5cf6);
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 800;
+  box-shadow: 0 8px 24px rgba(109, 93, 252, 0.25);
+}
+
+.viv-ia-header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.viv-ia-header p {
+  margin: 3px 0 0;
+  opacity: 0.65;
+  font-size: 14px;
+}
+
+.viv-ia-chat {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 150px);
+  min-height: 520px;
+  max-width: 1000px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.viv-ia-mensagens {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.viv-ia-linha {
+  display: flex;
+  width: 100%;
+}
+
+.viv-ia-linha--viv {
+  justify-content: flex-start;
+}
+
+.viv-ia-linha--usuario {
+  justify-content: flex-end;
+}
+
+.viv-ia-balao {
+  max-width: min(75%, 680px);
+  padding: 13px 16px;
+  border-radius: 18px;
+  line-height: 1.5;
+  font-size: 15px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.viv-ia-balao--viv {
+  background: rgba(255, 255, 255, 0.08);
+  border-bottom-left-radius: 6px;
+}
+
+.viv-ia-balao--usuario {
+  background: linear-gradient(135deg, #6d5dfc, #8b5cf6);
+  color: #ffffff;
+  border-bottom-right-radius: 6px;
+}
+
+.viv-ia-balao--erro {
+  border: 1px solid rgba(239, 68, 68, 0.5);
+}
+
+.viv-ia-digitando {
+  opacity: 0.7;
+  font-style: italic;
+}
+
+.viv-ia-form {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  padding: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.viv-ia-form textarea {
+  flex: 1;
+  resize: none;
+  min-height: 48px;
+  max-height: 150px;
+  padding: 13px 15px;
+  box-sizing: border-box;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: inherit;
+  font: inherit;
+  outline: none;
+}
+
+.viv-ia-form textarea::placeholder {
+  color: inherit;
+  opacity: 0.45;
+}
+
+.viv-ia-form textarea:focus {
+  border-color: #7c6dfc;
+  box-shadow: 0 0 0 3px rgba(124, 109, 252, 0.12);
+}
+
+.viv-ia-form button {
+  min-width: 105px;
+  height: 48px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #6d5dfc, #8b5cf6);
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.viv-ia-form button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.viv-ia-form button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.viv-ia-aviso {
+  margin: 0;
+  padding: 0 16px 14px;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+@media (max-width: 700px) {
+  .viv-ia-page {
+    padding: 16px;
+  }
+
+  .viv-ia-chat {
+    height: calc(100vh - 120px);
+    min-height: 450px;
+    border-radius: 16px;
+  }
+
+  .viv-ia-mensagens {
+    padding: 16px;
+  }
+
+  .viv-ia-balao {
+    max-width: 88%;
+  }
+
+  .viv-ia-form {
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .viv-ia-form button {
+    min-width: 82px;
+    padding: 0 12px;
+  }
+}

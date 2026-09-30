@@ -21,6 +21,7 @@ import AuthForm from "./auth/AuthForm.jsx";
 import AdminPanel from "./Admin/AdminPanel.jsx";
 import Configuracoes from "./configuracoes/Configuracoes.jsx";
 import Assinaturas from "./assinaturas/Assinaturas.jsx";
+import VivIA from "./vivia/VivIA.jsx";
 
 import { supabase } from "./supabase.js";
 
@@ -488,6 +489,7 @@ function MenuIcon({ name }) {
     categorias: <><path d="m3 12 9-9h8v8l-9 9-8-8Z" /><circle cx="16" cy="8" r="1" /></>,
     metas: <><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="5" /><circle cx="12" cy="12" r="1" /></>,
     relatorios: <><path d="M4 20V10M10 20V4M16 20v-8M22 20V7" /></>,
+    ia: <><path d="M12 3a6 6 0 0 0-6 6v1a4 4 0 0 0-2 3.5A4.5 4.5 0 0 0 8.5 18H10v3h4v-3h1.5a4.5 4.5 0 0 0 4.5-4.5A4 4 0 0 0 18 10V9a6 6 0 0 0-6-6Z" /><path d="M9 10h.01M15 10h.01M9.5 14c1.5 1 3.5 1 5 0" /></>,
     logout: <><path d="M10 17l5-5-5-5M15 12H3" /><path d="M12 3h6a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-6" /></>
   };
   return <svg className="viv-nav-icon" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
@@ -1127,6 +1129,17 @@ function Viv() {
               <MenuIcon name={icone} /><span className="viv-sidebar-label">{rotulo}</span>
             </button>
           ))}
+          <button
+            type="button"
+            className={`viv-nav-item ${tela === "vivia" ? "viv-nav-item--active" : ""}`}
+            title="VIV IA"
+            aria-label="VIV IA"
+            aria-current={tela === "vivia" ? "page" : undefined}
+            onClick={() => setTela("vivia")}
+          >
+            <MenuIcon name="ia" />
+            <span className="viv-sidebar-label">VIV IA</span>
+          </button>
           <button type="button" className={`viv-nav-item ${tela === "assinaturas" ? "viv-nav-item--active" : ""}`} title="Assinaturas" aria-label="Assinaturas" onClick={() => setTela("assinaturas")}>
             <MenuIcon name="admin" /><span className="viv-sidebar-label">Assinaturas</span>
           </button>
@@ -1148,6 +1161,8 @@ function Viv() {
       <main className="viv-shell-content" id="conteudo-principal">
         {tela === "configuracoes" ? (
           <Configuracoes usuario={usuario} />
+        ) : tela === "vivia" ? (
+          <VivIA />
         ) : tela === "assinaturas" ? (
           <Assinaturas />
         ) : tela === "admin" && administrador ? (
