@@ -1,4 +1,4 @@
-﻿/* ==========================================
+/* ==========================================
 
    VIVI 2.0 - PAINEL FINANCEIRO
 
@@ -324,7 +324,7 @@ button:disabled {
 
 
 
-/* ÃREA PRINCIPAL */
+/* ÁREA PRINCIPAL */
 
 
 
@@ -472,7 +472,7 @@ button:disabled {
 
 
 
-/* CARTÃ•ES DE RESUMO */
+/* CARTÕES DE RESUMO */
 
 
 
@@ -682,7 +682,7 @@ button:disabled {
 
 
 
-/* PAINÃ‰IS */
+/* PAINÉIS */
 
 
 
@@ -780,7 +780,7 @@ button:disabled {
 
 
 
-/* GRÃFICO INICIAL */
+/* GRÁFICO INICIAL */
 
 
 
@@ -934,7 +934,7 @@ button:disabled {
 
 
 
-/* TRANSAÃ‡Ã•ES */
+/* TRANSAÇÕES */
 
 
 
@@ -1120,7 +1120,7 @@ button:disabled {
 
 
 
-/* FORMULÃRIO */
+/* FORMULÁRIO */
 
 
 
@@ -1252,7 +1252,7 @@ button:disabled {
 
 
 
-/* HISTÃ“RICO */
+/* HISTÓRICO */
 
 
 
@@ -1264,7 +1264,7 @@ button:disabled {
 
 
 
-/* RELATÃ“RIOS ANTIGOS */
+/* RELATÓRIOS ANTIGOS */
 
 
 
@@ -1478,7 +1478,7 @@ button:disabled {
 
 }
 
-/* VIVI 2.4 â€” ajustes de celular sem alterar componentes React */
+/* VIVI 2.4 — ajustes de celular sem alterar componentes React */
 html {
   -webkit-text-size-adjust: 100%;
 }
@@ -1587,7 +1587,7 @@ select {
   }
 }
 
-/* NavegaÃ§Ã£o unificada: o menu pertence exclusivamente ao main.jsx */
+/* Navegação unificada: o menu pertence exclusivamente ao main.jsx */
 .viv-shell .vivi-financeiro {
   display: block;
   min-height: 100vh;
@@ -1599,7 +1599,7 @@ select {
 }
 
 /* =========================================================
-   VIV 3.0 â€” DASHBOARD FINANCEIRO
+   VIV 3.0 — DASHBOARD FINANCEIRO
    ========================================================= */
 
 .viv-dashboard {
@@ -1736,7 +1736,7 @@ select {
 }
 
 /* =========================================================
-   PAINÃ‰IS
+   PAINÉIS
    ========================================================= */
 
 .viv-dashboard-grid {
@@ -1803,7 +1803,7 @@ select {
 }
 
 /* =========================================================
-   GRÃFICO
+   GRÁFICO
    ========================================================= */
 
 .viv-dashboard-chart {
@@ -1923,7 +1923,7 @@ select {
 }
 
 /* =========================================================
-   TRANSAÃ‡Ã•ES RECENTES
+   TRANSAÇÕES RECENTES
    ========================================================= */
 
 .viv-dashboard-recentes {
@@ -2108,7 +2108,7 @@ select {
 }
 
 /* =========================================================
-   CABEÃ‡ALHO MAIS PRÃ“XIMO DA REFERÃŠNCIA
+   CABEÇALHO MAIS PRÓXIMO DA REFERÊNCIA
    ========================================================= */
 
 .vivi-principal {
@@ -2245,535 +2245,1018 @@ select {
 
     font-size: 22px;
   }
+
+/* =========================================================
+   VIV DASHBOARD V4 — FULL SCREEN
+   ========================================================= */
+
+.viv-shell-content {
+  min-width: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.viv-shell .vivi-financeiro {
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+}
+
+.viv-shell .vivi-principal {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  margin: 0;
+  padding: 24px 28px 40px;
+  box-sizing: border-box;
+
+  background:
+    radial-gradient(
+      circle at 18% 0%,
+      rgba(21, 108, 255, 0.10),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 90% 15%,
+      rgba(135, 45, 255, 0.08),
+      transparent 25%
+    ),
+    #050a14;
+}
+
+/* O cabeçalho antigo não é necessário na home.
+   O novo dashboard possui seu próprio cabeçalho. */
+
+.viv-shell .vivi-principal > .vivi-topo {
+  max-width: none;
+}
+
+.viv-dashboard-v4 {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
 }
 
 /* =========================================================
-   VIV 4.0 — DASHBOARD NEON
-   Referência visual final aprovada
+   HERO
    ========================================================= */
 
-.viv-shell .vivi-principal {
-  max-width: none;
-  min-height: 100vh;
-  padding: 28px clamp(18px, 2.4vw, 42px) 48px;
+.viv-dash-hero {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  padding: 8px 2px 4px;
+}
+
+.viv-dash-eyebrow,
+.viv-panel-kicker {
+  display: block;
+
+  color: #408cff;
+
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.7px;
+}
+
+.viv-dash-hero h2 {
+  margin: 7px 0 5px;
+
+  color: #f5f8ff;
+
+  font-size: clamp(25px, 2.2vw, 36px);
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+
+.viv-dash-hero p {
+  margin: 0;
+
+  color: #70839f;
+
+  font-size: 13px;
+}
+
+.viv-dash-date {
+  min-width: 190px;
+
+  padding: 13px 17px;
+
+  border: 1px solid rgba(46, 120, 255, 0.25);
+  border-radius: 14px;
+
   background:
-    radial-gradient(circle at 48% -10%, rgba(0, 153, 255, 0.16), transparent 34%),
-    radial-gradient(circle at 88% 18%, rgba(92, 55, 255, 0.10), transparent 26%),
-    linear-gradient(180deg, rgba(3, 12, 25, 0.96), rgba(3, 10, 20, 0.99));
+    linear-gradient(
+      145deg,
+      rgba(11, 25, 48, 0.94),
+      rgba(8, 15, 31, 0.94)
+    );
+
+  box-shadow:
+    0 0 25px rgba(23, 98, 255, 0.08);
 }
 
-.vivi-topo {
-  padding: 0 2px 4px;
-  margin-bottom: 22px;
+.viv-dash-date span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #5e789a;
+
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.vivi-topo small {
-  color: #00d9ff;
-  letter-spacing: 1.8px;
-}
-
-.vivi-topo h1 {
-  margin: 6px 0 4px;
-  font-size: clamp(25px, 2.5vw, 35px);
-  text-shadow: 0 0 22px rgba(0, 174, 255, 0.10);
-}
-
-.vivi-topo p {
-  color: #7d95b2;
+.viv-dash-date strong {
+  color: #dbeaff;
   font-size: 12px;
 }
 
-.vivi-avatar {
-  width: 46px;
-  height: 46px;
-  flex-basis: 46px;
-  border: 1px solid rgba(0, 217, 255, 0.55);
-  background: linear-gradient(145deg, #0c5ca7, #5333b9);
-  color: #ffffff;
-  box-shadow:
-    0 0 0 3px rgba(0, 174, 255, 0.06),
-    0 0 24px rgba(0, 174, 255, 0.18);
-}
+/* =========================================================
+   CARDS
+   ========================================================= */
 
-.viv-dashboard-modelo {
-  gap: 18px;
-}
+.viv-dashboard-v4 .viv-dashboard-cards {
+  width: 100%;
 
-/* Cards superiores */
-
-.viv-dashboard-modelo .viv-dashboard-cards {
-  gap: 14px;
-}
-
-.viv-dashboard-modelo .viv-dash-card {
-  min-height: 116px;
-  padding: 17px 18px;
-  border-radius: 12px;
-  background:
-    linear-gradient(145deg, rgba(8, 24, 43, 0.96), rgba(4, 13, 27, 0.98));
-  box-shadow:
-    0 12px 30px rgba(0, 0, 0, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.035);
-}
-
-.viv-dashboard-modelo .viv-dash-card::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 18%;
-  bottom: 18%;
-  width: 2px;
-  border-radius: 0 3px 3px 0;
-}
-
-.viv-dashboard-modelo .viv-dash-entrada {
-  border-color: rgba(0, 238, 176, 0.34);
-}
-.viv-dashboard-modelo .viv-dash-entrada::before {
-  background: #00f0b5;
-  box-shadow: 0 0 14px #00f0b5;
-}
-
-.viv-dashboard-modelo .viv-dash-saida {
-  border-color: rgba(255, 70, 113, 0.34);
-}
-.viv-dashboard-modelo .viv-dash-saida::before {
-  background: #ff466f;
-  box-shadow: 0 0 14px #ff466f;
-}
-
-.viv-dashboard-modelo .viv-dash-saldo {
-  border-color: rgba(0, 183, 255, 0.40);
-}
-.viv-dashboard-modelo .viv-dash-saldo::before {
-  background: #00b7ff;
-  box-shadow: 0 0 14px #00b7ff;
-}
-
-.viv-dashboard-modelo .viv-dash-economia {
-  border-color: rgba(146, 84, 255, 0.40);
-}
-.viv-dashboard-modelo .viv-dash-economia::before {
-  background: #9254ff;
-  box-shadow: 0 0 14px #9254ff;
-}
-
-.viv-dashboard-modelo .viv-dash-card-topo {
-  margin-bottom: 11px;
-}
-
-.viv-dashboard-modelo .viv-dash-card-topo > span {
-  color: #9db0c8;
-  font-size: 11px;
-}
-
-.viv-dashboard-modelo .viv-dash-icon {
-  width: 31px;
-  height: 31px;
-  border: 1px solid rgba(73, 150, 255, 0.22);
-  border-radius: 8px;
-}
-
-.viv-dashboard-modelo .viv-dash-card > strong {
-  margin-bottom: 5px;
-  font-size: clamp(20px, 1.9vw, 27px);
-}
-
-.viv-dashboard-modelo .viv-dash-card > small {
-  color: #617b99;
-  font-size: 9px;
-}
-
-/* Painéis */
-
-.viv-dashboard-modelo .viv-dashboard-grid {
-  grid-template-columns: minmax(0, 1.58fr) minmax(330px, 0.82fr);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
 }
 
-.viv-dashboard-modelo .viv-dashboard-panel {
-  padding: 19px 20px;
-  border: 1px solid rgba(43, 105, 169, 0.32);
-  border-radius: 12px;
+.viv-dashboard-v4 .viv-dash-card {
+  position: relative;
+
+  min-width: 0;
+  min-height: 145px;
+
+  padding: 20px;
+
+  overflow: hidden;
+
+  border-radius: 18px;
+
   background:
-    radial-gradient(circle at 95% 0%, rgba(0, 135, 255, 0.06), transparent 35%),
-    linear-gradient(145deg, rgba(7, 22, 40, 0.97), rgba(3, 12, 25, 0.99));
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(57, 116, 255, 0.13),
+      transparent 42%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(12, 25, 48, 0.98),
+      rgba(6, 13, 28, 0.98)
+    );
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.viv-dashboard-v4 .viv-dash-card:hover {
+  transform: translateY(-2px);
+}
+
+.viv-dashboard-v4 .viv-dash-saldo {
+  border: 1px solid rgba(34, 141, 255, 0.65);
+
   box-shadow:
-    0 14px 36px rgba(0, 0, 0, 0.24),
-    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+    inset 0 0 25px rgba(18, 112, 255, 0.05),
+    0 0 18px rgba(18, 112, 255, 0.08);
 }
 
-.viv-dashboard-modelo .viv-dashboard-panel-title {
-  margin-bottom: 17px;
+.viv-dashboard-v4 .viv-dash-entrada {
+  border: 1px solid rgba(36, 221, 164, 0.55);
+
+  box-shadow:
+    inset 0 0 25px rgba(36, 221, 164, 0.04),
+    0 0 18px rgba(36, 221, 164, 0.06);
 }
 
-.viv-dashboard-modelo .viv-dashboard-panel-title h2 {
-  color: #f5f9ff;
-  font-size: 14px;
+.viv-dashboard-v4 .viv-dash-saida {
+  border: 1px solid rgba(255, 66, 119, 0.55);
+
+  box-shadow:
+    inset 0 0 25px rgba(255, 66, 119, 0.04),
+    0 0 18px rgba(255, 66, 119, 0.06);
 }
 
-.viv-dashboard-modelo .viv-dashboard-panel-title p {
-  color: #607b9b;
-  font-size: 9px;
+.viv-dashboard-v4 .viv-dash-economia {
+  border: 1px solid rgba(159, 75, 255, 0.60);
+
+  box-shadow:
+    inset 0 0 25px rgba(159, 75, 255, 0.05),
+    0 0 18px rgba(159, 75, 255, 0.07);
 }
 
-.viv-dashboard-periodo {
-  padding: 6px 9px;
-  border: 1px solid rgba(54, 111, 175, 0.26);
-  border-radius: 7px;
-  background: rgba(8, 29, 53, 0.65);
-  color: #7892af;
-  font-size: 9px;
+.viv-dashboard-v4 .viv-dash-card-topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
 }
 
-/* Gráfico principal */
-
-.viv-dashboard-modelo .viv-dashboard-chart {
-  min-height: 300px;
+.viv-dashboard-v4 .viv-dash-card-topo > div:first-child {
+  min-width: 0;
 }
 
-.viv-dashboard-modelo .viv-dashboard-bars {
-  height: 215px;
-  padding-top: 15px;
-  border-bottom-color: rgba(50, 101, 155, 0.20);
+.viv-dashboard-v4 .viv-dash-card span {
+  display: block;
+
+  margin-bottom: 12px;
+
+  color: #7186a4;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.viv-dashboard-v4 .viv-dash-card strong {
+  display: block;
+
+  color: #f3f7ff;
+
+  font-size: clamp(20px, 1.65vw, 29px);
+  line-height: 1.1;
+
+  overflow-wrap: anywhere;
+}
+
+.viv-dashboard-v4 .viv-dash-card small {
+  display: block;
+
+  margin-top: 18px;
+
+  color: #526985;
+
+  font-size: 10px;
+}
+
+.viv-dashboard-v4 .viv-dash-icon {
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 42px;
+
+  width: 42px;
+  height: 42px;
+
+  border: 1px solid rgba(74, 139, 255, 0.30);
+  border-radius: 13px;
+
+  background: rgba(28, 89, 185, 0.12);
+
+  color: #5aa7ff;
+
+  font-size: 20px;
+
+  box-shadow:
+    0 0 18px rgba(44, 118, 255, 0.10);
+}
+
+.viv-dashboard-v4 .viv-dash-entrada .viv-dash-icon {
+  color: #35e5ae;
+  border-color: rgba(53, 229, 174, 0.28);
+  background: rgba(53, 229, 174, 0.08);
+}
+
+.viv-dashboard-v4 .viv-dash-saida .viv-dash-icon {
+  color: #ff577f;
+  border-color: rgba(255, 87, 127, 0.28);
+  background: rgba(255, 87, 127, 0.08);
+}
+
+.viv-dashboard-v4 .viv-dash-economia .viv-dash-icon {
+  color: #b277ff;
+  border-color: rgba(178, 119, 255, 0.28);
+  background: rgba(178, 119, 255, 0.08);
+}
+
+/* =========================================================
+   PAINÉIS
+   ========================================================= */
+
+.viv-dashboard-main-grid {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1.9fr) minmax(300px, 0.85fr);
+  gap: 18px;
+}
+
+.viv-dashboard-bottom-grid {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.viv-dashboard-v4 .viv-dashboard-panel {
+  min-width: 0;
+
+  padding: 21px;
+
+  border: 1px solid rgba(55, 102, 165, 0.20);
+  border-radius: 18px;
+
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(61, 76, 183, 0.08),
+      transparent 38%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(9, 20, 39, 0.98),
+      rgba(5, 12, 25, 0.98)
+    );
+
+  box-shadow:
+    0 12px 38px rgba(0, 0, 0, 0.18);
+}
+
+.viv-dashboard-v4 .viv-dashboard-panel-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+
+  margin-bottom: 18px;
+}
+
+.viv-dashboard-v4 .viv-dashboard-panel-title h2 {
+  margin: 5px 0 4px;
+
+  color: #f0f5ff;
+
+  font-size: 16px;
+}
+
+.viv-dashboard-v4 .viv-dashboard-panel-title p {
+  margin: 0;
+
+  color: #627894;
+
+  font-size: 10px;
+}
+
+/* =========================================================
+   GRÁFICO
+   ========================================================= */
+
+.viv-dashboard-v4 .viv-dashboard-chart {
+  min-height: 390px;
+}
+
+.viv-dashboard-v4 .viv-dashboard-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 13px;
+
+  color: #7085a0;
+
+  font-size: 10px;
+}
+
+.viv-dashboard-v4 .viv-dashboard-legend .entrada {
+  color: #38dca8;
+}
+
+.viv-dashboard-v4 .viv-dashboard-legend .saida {
+  color: #ff6387;
+}
+
+.viv-dashboard-v4 .viv-dashboard-bars {
+  position: relative;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+
+  gap: 12px;
+
+  width: 100%;
+  height: 285px;
+
+  padding: 30px 8px 0;
+
+  border-bottom: 1px solid rgba(88, 119, 160, 0.16);
+
   background:
     repeating-linear-gradient(
-      to bottom,
-      transparent,
-      transparent 50px,
-      rgba(64, 111, 162, 0.08) 51px
+      to top,
+      transparent 0,
+      transparent 55px,
+      rgba(86, 120, 165, 0.07) 56px
     );
 }
 
-.viv-dashboard-modelo .viv-dashboard-bar-area {
-  height: 172px;
-}
-
-.viv-dashboard-modelo .viv-dashboard-bar {
-  width: min(25px, 38%);
-  border-radius: 4px 4px 1px 1px;
-}
-
-.viv-dashboard-modelo .viv-dashboard-bar.entrada {
-  background: linear-gradient(180deg, #2dffd0, #00b98a);
-  box-shadow: 0 0 16px rgba(0, 236, 178, 0.22);
-}
-
-.viv-dashboard-modelo .viv-dashboard-bar.saida {
-  background: linear-gradient(180deg, #ff6d8c, #e23161);
-  box-shadow: 0 0 16px rgba(255, 64, 108, 0.18);
-}
-
-/* Donut de categorias */
-
-.viv-dashboard-categorias {
-  min-height: 300px;
-}
-
-.viv-category-content {
-  display: grid;
-  grid-template-columns: minmax(130px, 0.9fr) minmax(150px, 1.1fr);
+.viv-dashboard-v4 .viv-dashboard-bar-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   align-items: center;
-  gap: 20px;
-  min-height: 205px;
+
+  flex: 1;
+
+  min-width: 0;
+  height: 100%;
+}
+
+.viv-dashboard-bar-values {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+
+  width: 100%;
+
+  margin-bottom: 5px;
+
+  color: #637994;
+
+  font-size: 7px;
+}
+
+.viv-dashboard-v4 .viv-dashboard-bar-area {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  gap: 5px;
+
+  width: 100%;
+  height: calc(100% - 35px);
+}
+
+.viv-dashboard-v4 .viv-dashboard-bar {
+  width: min(28px, 35%);
+
+  min-height: 3px;
+
+  border-radius: 6px 6px 2px 2px;
+}
+
+.viv-dashboard-v4 .viv-dashboard-bar.entrada {
+  background:
+    linear-gradient(
+      180deg,
+      #41e9b4,
+      #078e72
+    );
+
+  box-shadow:
+    0 0 13px rgba(53, 226, 174, 0.17);
+}
+
+.viv-dashboard-v4 .viv-dashboard-bar.saida {
+  background:
+    linear-gradient(
+      180deg,
+      #ff6387,
+      #b92750
+    );
+
+  box-shadow:
+    0 0 13px rgba(255, 82, 124, 0.15);
+}
+
+.viv-dashboard-v4 .viv-dashboard-bar-group small {
+  margin-top: 9px;
+
+  color: #607692;
+
+  font-size: 9px;
+}
+
+/* =========================================================
+   DONUT / CATEGORIAS
+   ========================================================= */
+
+.viv-category-panel {
+  min-height: 390px;
+}
+
+.viv-category-donut-wrap {
+  display: grid;
+  place-items: center;
+
+  padding: 5px 0 20px;
 }
 
 .viv-category-donut {
   position: relative;
-  width: min(170px, 100%);
+
+  display: grid;
+  place-items: center;
+
+  width: clamp(145px, 12vw, 190px);
   aspect-ratio: 1;
-  margin: 0 auto;
+
   border-radius: 50%;
+
   box-shadow:
-    0 0 24px rgba(0, 174, 255, 0.10),
-    inset 0 0 18px rgba(0, 0, 0, 0.28);
+    0 0 30px rgba(59, 115, 255, 0.10);
 }
 
 .viv-category-donut::after {
   content: "";
+
   position: absolute;
-  inset: 25%;
-  border: 1px solid rgba(80, 137, 194, 0.20);
+  inset: 22%;
+
+  border: 1px solid rgba(81, 125, 183, 0.20);
   border-radius: 50%;
-  background: #071528;
-  box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.45);
+
+  background: #07101f;
 }
 
 .viv-category-donut-center {
-  position: absolute;
+  position: relative;
   z-index: 2;
-  inset: 25%;
+
   display: grid;
-  place-content: center;
+  place-items: center;
+
   text-align: center;
 }
 
-.viv-category-donut-center strong {
-  color: #f3f8ff;
-  font-size: clamp(13px, 1.2vw, 17px);
-}
-
-.viv-category-donut-center small {
-  margin-top: 4px;
-  color: #627e9e;
-  font-size: 8px;
-}
-
-.viv-category-list {
-  display: grid;
-  gap: 9px;
-}
-
-.viv-category-row {
-  display: grid;
-  grid-template-columns: 8px minmax(70px, 1fr) 35px minmax(64px, auto);
-  align-items: center;
-  gap: 7px;
-  color: #829ab6;
+.viv-category-donut-center span {
+  color: #617894;
   font-size: 9px;
 }
 
-.viv-category-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  box-shadow: 0 0 8px currentColor;
+.viv-category-donut-center strong {
+  margin-top: 3px;
+
+  color: #eef5ff;
+
+  font-size: 13px;
+}
+
+.viv-category-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+.viv-category-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  padding: 9px 10px;
+
+  border: 1px solid rgba(75, 111, 157, 0.12);
+  border-radius: 10px;
+
+  background: rgba(5, 14, 28, 0.42);
 }
 
 .viv-category-name {
-  overflow: hidden;
-  color: #9bb0c8;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.viv-category-row strong {
-  color: #dce9f8;
-  text-align: right;
-}
-
-.viv-category-row > span:last-child {
-  color: #7189a5;
-  text-align: right;
-  white-space: nowrap;
-}
-
-/* Linha inferior */
-
-.viv-dashboard-grid-inferior {
-  align-items: stretch;
-}
-
-.viv-dashboard-grid-inferior .viv-dashboard-panel {
-  min-height: 315px;
-}
-
-.viv-dashboard-modelo .viv-dashboard-recentes {
-  min-height: 315px;
-}
-
-.viv-dashboard-modelo .viv-dashboard-recentes .vivi-transacao {
-  padding: 10px 0;
-}
-
-.viv-dashboard-modelo .viv-dashboard-recentes .vivi-transacao-icone {
-  width: 35px;
-  height: 35px;
-  flex-basis: 35px;
-  border-radius: 9px;
-}
-
-.viv-dashboard-modelo .viv-dashboard-link {
-  border-color: transparent;
-  background: transparent;
-  color: #00c8ff;
-}
-
-.viv-dashboard-modelo .viv-dashboard-link:hover {
-  border-color: rgba(0, 200, 255, 0.20);
-  background: rgba(0, 200, 255, 0.07);
-}
-
-/* Metas */
-
-.viv-dashboard-metas {
-  min-height: 315px;
-}
-
-.viv-goals-list {
-  display: grid;
-  gap: 16px;
-}
-
-.viv-goal-row {
   display: flex;
   align-items: center;
-  gap: 11px;
-}
 
-.viv-goal-icon {
-  display: grid;
-  place-items: center;
-  flex: 0 0 35px;
-  width: 35px;
-  height: 35px;
-  border: 1px solid currentColor;
-  border-radius: 9px;
-  background: rgba(11, 32, 55, 0.72);
-  font-size: 17px;
-  box-shadow: 0 0 12px rgba(0, 174, 255, 0.06);
-}
+  gap: 8px;
 
-.viv-goal-info {
-  flex: 1;
   min-width: 0;
-}
 
-.viv-goal-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 7px;
-}
+  color: #b7c7db;
 
-.viv-goal-head > div {
-  min-width: 0;
-}
-
-.viv-goal-head strong {
-  display: block;
-  color: #dce8f7;
   font-size: 10px;
 }
 
-.viv-goal-head small {
-  display: block;
-  margin-top: 3px;
-  color: #637e9e;
-  font-size: 8px;
+.viv-category-dot {
+  display: inline-block;
+
+  flex: 0 0 8px;
+
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  box-shadow: 0 0 9px currentColor;
 }
 
-.viv-goal-track {
-  height: 5px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: rgba(49, 77, 108, 0.45);
+.viv-category-value {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.viv-category-value strong {
+  color: #e7effa;
+
+  font-size: 10px;
+}
+
+.viv-category-value small {
+  min-width: 31px;
+
+  color: #607894;
+
+  font-size: 9px;
+  text-align: right;
+}
+
+/* =========================================================
+   TRANSAÇÕES
+   ========================================================= */
+
+.viv-dashboard-v4 .viv-dashboard-recentes {
+  min-height: 355px;
+}
+
+.viv-dashboard-v4 .vivi-lista {
+  width: 100%;
+}
+
+.viv-dashboard-v4 .vivi-transacao {
+  width: 100%;
+
+  padding: 12px 4px;
+
+  border-bottom:
+    1px solid rgba(73, 107, 151, 0.12);
+}
+
+.viv-dashboard-v4 .vivi-transacao:last-child {
+  border-bottom: 0;
+}
+
+/* =========================================================
+   METAS
+   ========================================================= */
+
+.viv-goals-panel {
+  min-height: 355px;
+}
+
+.viv-goals-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 18px;
+}
+
+.viv-goal-item {
+  padding: 4px 2px;
+}
+
+.viv-goal-header,
+.viv-goal-values {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+}
+
+.viv-goal-header > div {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.viv-goal-header strong {
+  color: #dbe6f5;
+
+  font-size: 11px;
+}
+
+.viv-goal-header > span {
+  color: #7990ad;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.viv-goal-values {
+  margin: 8px 0;
+
+  color: #667e9b;
+
+  font-size: 9px;
 }
 
 .viv-goal-progress {
-  height: 100%;
-  min-width: 2px;
-  border-radius: inherit;
-  box-shadow: 0 0 9px currentColor;
-  transition: width 0.35s ease;
+  width: 100%;
+  height: 7px;
+
+  overflow: hidden;
+
+  border-radius: 20px;
+
+  background: rgba(76, 105, 146, 0.14);
 }
 
-.viv-dashboard-meta-empty {
-  min-height: 190px;
-  gap: 8px;
+.viv-goal-progress > div {
+  height: 100%;
+
+  border-radius: inherit;
+
+  box-shadow:
+    0 0 10px rgba(52, 145, 255, 0.20);
+
+  transition: width 0.3s ease;
+}
+
+.viv-goals-empty {
+  display: grid;
+  place-items: center;
+
+  min-height: 225px;
+
   text-align: center;
 }
 
-.viv-dashboard-meta-empty p {
-  margin: 0;
+.viv-goals-empty-icon {
+  display: grid;
+  place-items: center;
+
+  width: 52px;
+  height: 52px;
+
+  margin-bottom: 10px;
+
+  border: 1px solid rgba(87, 122, 255, 0.30);
+  border-radius: 16px;
+
+  background: rgba(65, 73, 198, 0.10);
+
+  color: #7d7cff;
+
+  font-size: 24px;
 }
 
-/* Demais telas mantêm a identidade visual */
+.viv-goals-empty strong {
+  color: #dce7f6;
 
-.viv-shell .vivi-bloco {
-  border-color: rgba(43, 105, 169, 0.30);
+  font-size: 12px;
+}
+
+.viv-goals-empty p {
+  max-width: 300px;
+
+  margin: 7px 0 14px;
+
+  color: #657c98;
+
+  font-size: 10px;
+}
+
+.viv-goals-empty button {
+  padding: 8px 14px;
+
+  border: 1px solid rgba(76, 127, 255, 0.35);
+  border-radius: 9px;
+
+  background: rgba(48, 93, 209, 0.14);
+
+  color: #77b4ff;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+/* =========================================================
+   VIV IA
+   ========================================================= */
+
+.viv-dashboard-ai-strip {
+  display: flex;
+  align-items: center;
+
+  gap: 17px;
+
+  width: 100%;
+
+  padding: 18px 21px;
+
+  border: 1px solid rgba(105, 70, 255, 0.28);
+  border-radius: 18px;
+
   background:
-    linear-gradient(145deg, rgba(7, 22, 40, 0.97), rgba(3, 12, 25, 0.99));
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.20);
+    radial-gradient(
+      circle at 90% 20%,
+      rgba(133, 45, 255, 0.15),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 5% 50%,
+      rgba(25, 126, 255, 0.13),
+      transparent 30%
+    ),
+    linear-gradient(
+      145deg,
+      #09152b,
+      #090d20
+    );
+
+  box-shadow:
+    0 0 30px rgba(77, 54, 255, 0.06);
 }
 
-.viv-shell .vivi-formulario input,
-.viv-shell .vivi-formulario select,
-.viv-shell .vivi-busca {
-  border-color: rgba(50, 105, 162, 0.45);
-  background: rgba(3, 15, 29, 0.88);
+.viv-dashboard-ai-strip .viv-dashboard-ai-icon {
+  display: grid;
+  place-items: center;
+
+  flex: 0 0 56px;
+
+  width: 56px;
+  height: 56px;
+
+  border: 1px solid rgba(58, 166, 255, 0.55);
+  border-radius: 17px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #087fd8,
+      #773bdc
+    );
+
+  color: white;
+
+  font-size: 25px;
+  font-weight: 900;
+
+  box-shadow:
+    0 0 25px rgba(67, 102, 255, 0.20);
 }
 
-.viv-shell .vivi-formulario input:focus,
-.viv-shell .vivi-formulario select:focus,
-.viv-shell .vivi-busca:focus {
-  border-color: #00c8ff;
-  box-shadow: 0 0 0 3px rgba(0, 200, 255, 0.10);
+.viv-dashboard-ai-strip span {
+  display: block;
+
+  color: #638fff;
+
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
 }
 
-.viv-shell .vivi-salvar {
-  background: linear-gradient(110deg, #0077ff, #7445ff);
-  box-shadow: 0 0 20px rgba(50, 92, 255, 0.15);
+.viv-dashboard-ai-strip strong {
+  display: block;
+
+  margin: 4px 0;
+
+  color: #f0f4ff;
+
+  font-size: 14px;
 }
 
-/* Responsividade */
+.viv-dashboard-ai-strip p {
+  margin: 0;
+
+  color: #6d819d;
+
+  font-size: 10px;
+}
+
+/* =========================================================
+   RESPONSIVIDADE V4
+   ========================================================= */
+
+@media (min-width: 1600px) {
+  .viv-shell .vivi-principal {
+    padding-left: 34px;
+    padding-right: 34px;
+  }
+
+  .viv-dashboard-v4 .viv-dashboard-cards {
+    gap: 20px;
+  }
+
+  .viv-dashboard-main-grid,
+  .viv-dashboard-bottom-grid {
+    gap: 20px;
+  }
+}
 
 @media (max-width: 1180px) {
-  .viv-dashboard-modelo .viv-dashboard-grid {
+  .viv-dashboard-v4 .viv-dashboard-cards {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .viv-dashboard-main-grid {
     grid-template-columns: 1fr;
   }
 
-  .viv-category-content {
-    grid-template-columns: minmax(150px, 0.7fr) minmax(220px, 1.3fr);
+  .viv-category-panel {
+    min-height: auto;
+  }
+
+  .viv-category-donut {
+    width: 170px;
   }
 }
 
 @media (max-width: 900px) {
   .viv-shell .vivi-principal {
-    padding: 22px 16px 40px;
+    padding: 20px;
   }
 
-  .viv-dashboard-modelo .viv-dashboard-cards {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 620px) {
-  .viv-dashboard-modelo {
-    gap: 12px;
-  }
-
-  .viv-dashboard-modelo .viv-dashboard-cards {
+  .viv-dashboard-bottom-grid {
     grid-template-columns: 1fr;
   }
 
-  .viv-dashboard-modelo .viv-dash-card {
-    min-height: 108px;
-  }
-
-  .viv-dashboard-modelo .viv-dashboard-panel {
-    padding: 15px;
-  }
-
-  .viv-category-content {
-    grid-template-columns: 1fr;
-  }
-
-  .viv-category-donut {
-    width: 155px;
-  }
-
-  .viv-category-row {
-    grid-template-columns: 8px minmax(70px, 1fr) 34px minmax(60px, auto);
-  }
-
-  .viv-dashboard-modelo .viv-dashboard-panel-title {
+  .viv-dash-hero {
     align-items: flex-start;
   }
 }
 
-@media (max-width: 390px) {
+@media (max-width: 650px) {
   .viv-shell .vivi-principal {
-    padding-inline: 11px;
+    padding: 15px 12px 30px;
   }
 
-  .viv-category-row {
-    font-size: 8px;
+  .viv-dashboard-v4 {
+    gap: 14px;
   }
 
-  .viv-goal-head {
-    gap: 6px;
+  .viv-dash-hero {
+    flex-direction: column;
+  }
+
+  .viv-dash-date {
+    width: 100%;
+  }
+
+  .viv-dashboard-v4 .viv-dashboard-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .viv-dashboard-v4 .viv-dash-card {
+    min-height: 125px;
+  }
+
+  .viv-dashboard-v4 .viv-dashboard-panel {
+    padding: 15px;
+  }
+
+  .viv-dashboard-v4 .viv-dashboard-panel-title {
+    flex-direction: column;
+  }
+
+  .viv-dashboard-v4 .viv-dashboard-bars {
+    height: 230px;
+
+    gap: 4px;
+
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+
+  .viv-dashboard-bar-values {
+    display: none;
+  }
+
+  .viv-dashboard-v4 .viv-dashboard-bar-area {
+    height: calc(100% - 22px);
+  }
+
+  .viv-dashboard-v4 .viv-dashboard-bar {
+    width: min(18px, 40%);
+  }
+
+  .viv-dashboard-ai-strip {
+    align-items: flex-start;
+
+    padding: 15px;
+  }
+
+  .viv-dashboard-ai-strip
+  .viv-dashboard-ai-icon {
+    flex-basis: 46px;
+
+    width: 46px;
+    height: 46px;
+
+    border-radius: 13px;
+
+    font-size: 21px;
   }
 }
 
+
+}

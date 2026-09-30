@@ -491,10 +491,6 @@ function MenuIcon({ name }) {
     metas: <><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="5" /><circle cx="12" cy="12" r="1" /></>,
     relatorios: <><path d="M4 20V10M10 20V4M16 20v-8M22 20V7" /></>,
     ia: <><path d="M12 3a6 6 0 0 0-6 6v1a4 4 0 0 0-2 3.5A4.5 4.5 0 0 0 8.5 18H10v3h4v-3h1.5a4.5 4.5 0 0 0 4.5-4.5A4 4 0 0 0 18 10V9a6 6 0 0 0-6-6Z" /><path d="M9 10h.01M15 10h.01M9.5 14c1.5 1 3.5 1 5 0" /></>,
-    search: <><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></>,
-    bell: <><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" /><path d="M10 21h4" /></>,
-    sun: <><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41" /></>,
-    moon: <><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z" /></>,
     logout: <><path d="M10 17l5-5-5-5M15 12H3" /><path d="M12 3h6a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-6" /></>
   };
   return <svg className="viv-nav-icon" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
@@ -504,16 +500,6 @@ function Viv() {
 
   const [menuExpandido, setMenuExpandido] = useState(() => window.innerWidth > 700);
   const [paginaFinanceira, setPaginaFinanceira] = useState("inicio");
-  const [buscaTopo, setBuscaTopo] = useState("");
-  const [nomeTopo, setNomeTopo] = useState("");
-  const [tema, setTema] = useState(() => {
-    try {
-      return localStorage.getItem("viv-tema") || "escuro";
-    } catch {
-      return "escuro";
-    }
-  });
-  const [notificacoesAbertas, setNotificacoesAbertas] = useState(false);
   const [usuario, setUsuario] =
 
     useState(null);
@@ -866,70 +852,6 @@ function Viv() {
 
   // ========================================
 
-  // TEMA DO APLICATIVO
-
-  // ========================================
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-viv-theme", tema);
-
-    try {
-      localStorage.setItem("viv-tema", tema);
-    } catch {
-      // O tema continua funcionando mesmo se o navegador bloquear o armazenamento.
-    }
-  }, [tema]);
-
-  // ========================================
-
-  // NOME DO USUÁRIO NO TOPO
-
-  // ========================================
-
-  useEffect(() => {
-    let ativo = true;
-
-    async function carregarNomeTopo() {
-      if (!usuario?.id) {
-        if (ativo) setNomeTopo("");
-        return;
-      }
-
-      const nomeFallback =
-        usuario.user_metadata?.nome ||
-        usuario.user_metadata?.name ||
-        usuario.email?.split("@")[0] ||
-        "Usuário";
-
-      try {
-        const { data, error } = await supabase
-          .from("viv_perfis")
-          .select("nome")
-          .eq("id", usuario.id)
-          .maybeSingle();
-
-        if (!ativo) return;
-
-        if (error) {
-          setNomeTopo(nomeFallback);
-          return;
-        }
-
-        setNomeTopo(data?.nome?.trim() || nomeFallback);
-      } catch {
-        if (ativo) setNomeTopo(nomeFallback);
-      }
-    }
-
-    carregarNomeTopo();
-
-    return () => {
-      ativo = false;
-    };
-  }, [usuario]);
-
-  // ========================================
-
   // SAIR DA CONTA
 
   // ========================================
@@ -1181,109 +1103,18 @@ function Viv() {
 
   // ========================================
 
-  const nomeExibicao =
-    nomeTopo ||
-    usuario?.user_metadata?.nome ||
-    usuario?.user_metadata?.name ||
-    usuario?.email?.split("@")[0] ||
-    "Usuário";
-
-  const inicialUsuario =
-    nomeExibicao.trim().charAt(0).toUpperCase() || "V";
-
-  const dataTopo = new Intl.DateTimeFormat("pt-BR", {
-    weekday: "long",
-    day: "2-digit",
-    month: "long",
-    year: "numeric"
-  }).format(new Date());
-
-  function abrirHistoricoPelaBusca(evento) {
-    evento.preventDefault();
-
-    if (!buscaTopo.trim()) {
-      return;
-    }
-
-    setTela("financeiro");
-    setPaginaFinanceira("historico");
-  }
-
-  const notificacoes = [];
-
-  if (acesso?.expira_em) {
-    const vencimento = new Date(acesso.expira_em);
-    const agora = new Date();
-    const diferenca = vencimento.getTime() - agora.getTime();
-    const diasRestantes = Math.ceil(diferenca / 86400000);
-
-    if (diasRestantes >= 0 && diasRestantes <= 7) {
-      notificacoes.push({
-        id: "acesso-vencimento",
-        titulo: "Acesso próximo do vencimento",
-        texto:
-          diasRestantes === 0
-            ? "Seu período de acesso vence hoje."
-            : `Seu período de acesso vence em ${diasRestantes} dia${diasRestantes === 1 ? "" : "s"}.`,
-        tipo: "alerta"
-      });
-    }
-  }
-
-  if (administrador) {
-    notificacoes.push({
-      id: "admin",
-      titulo: "VIV Admin ativo",
-      texto: "Seu acesso administrativo está disponível.",
-      tipo: "info"
-    });
-  }
-
-  if (notificacoes.length === 0) {
-    notificacoes.push({
-      id: "status",
-      titulo: "Tudo certo por aqui",
-      texto: "Não há avisos importantes no momento.",
-      tipo: "ok"
-    });
-  }
-
-  const possuiAviso =
-    notificacoes.some((item) => item.tipo === "alerta");
-
-  function alternarTema() {
-    setTema((temaAtual) =>
-      temaAtual === "escuro" ? "claro" : "escuro"
-    );
-  }
-
   return (
     <div className="viv-shell">
-      <aside
-        className={`viv-sidebar ${menuExpandido ? "viv-sidebar--expanded" : ""}`}
-        aria-label="Menu principal"
-      >
+      <aside className={`viv-sidebar ${menuExpandido ? "viv-sidebar--expanded" : ""}`} aria-label="Menu principal">
         <div className="viv-sidebar-brand">
           <div className="viv-brand-logo">
             <img src={vivLogo} alt="VIV" />
           </div>
-
-          <div className="viv-sidebar-label viv-brand-copy">
-            <span className="viv-brand-name">VIV</span>
-            <small>CONTROLE FINANCEIRO</small>
-          </div>
-
-          <button
-            type="button"
-            className="viv-menu-toggle"
-            aria-label={menuExpandido ? "Recolher menu" : "Expandir menu"}
-            aria-expanded={menuExpandido}
-            onClick={() => setMenuExpandido(!menuExpandido)}
-          >
+          <span className="viv-sidebar-label viv-brand-name">VIV</span>
+          <button type="button" className="viv-menu-toggle" aria-label={menuExpandido ? "Recolher menu" : "Expandir menu"} aria-expanded={menuExpandido} onClick={() => setMenuExpandido(!menuExpandido)}>
             <MenuIcon name="menu" />
           </button>
         </div>
-
         <nav className="viv-sidebar-nav" aria-label="Navegação">
           {[
             ["inicio", "dashboard", "Painel financeiro"],
@@ -1293,36 +1124,17 @@ function Viv() {
             ["metas", "metas", "Metas financeiras"],
             ["relatorios", "relatorios", "Relatórios"]
           ].map(([id, icone, rotulo]) => (
-            <button
-              key={id}
-              type="button"
-              className={`viv-nav-item ${
-                tela === "financeiro" && paginaFinanceira === id
-                  ? "viv-nav-item--active"
-                  : ""
-              }`}
-              title={rotulo}
-              aria-label={rotulo}
-              aria-current={
-                tela === "financeiro" && paginaFinanceira === id
-                  ? "page"
-                  : undefined
-              }
-              onClick={() => {
-                setTela("financeiro");
-                setPaginaFinanceira(id);
-              }}
-            >
-              <MenuIcon name={icone} />
-              <span className="viv-sidebar-label">{rotulo}</span>
+            <button key={id} type="button"
+              className={`viv-nav-item ${tela === "financeiro" && paginaFinanceira === id ? "viv-nav-item--active" : ""}`}
+              title={rotulo} aria-label={rotulo}
+              aria-current={tela === "financeiro" && paginaFinanceira === id ? "page" : undefined}
+              onClick={() => { setTela("financeiro"); setPaginaFinanceira(id); }}>
+              <MenuIcon name={icone} /><span className="viv-sidebar-label">{rotulo}</span>
             </button>
           ))}
-
           <button
             type="button"
-            className={`viv-nav-item ${
-              tela === "vivia" ? "viv-nav-item--active" : ""
-            }`}
+            className={`viv-nav-item ${tela === "vivia" ? "viv-nav-item--active" : ""}`}
             title="VIV IA"
             aria-label="VIV IA"
             aria-current={tela === "vivia" ? "page" : undefined}
@@ -1331,238 +1143,37 @@ function Viv() {
             <MenuIcon name="ia" />
             <span className="viv-sidebar-label">VIV IA</span>
           </button>
-
-          <button
-            type="button"
-            className={`viv-nav-item ${
-              tela === "assinaturas" ? "viv-nav-item--active" : ""
-            }`}
-            title="Assinaturas"
-            aria-label="Assinaturas"
-            onClick={() => setTela("assinaturas")}
-          >
-            <MenuIcon name="admin" />
-            <span className="viv-sidebar-label">Assinaturas</span>
+          <button type="button" className={`viv-nav-item ${tela === "assinaturas" ? "viv-nav-item--active" : ""}`} title="Assinaturas" aria-label="Assinaturas" onClick={() => setTela("assinaturas")}>
+            <MenuIcon name="admin" /><span className="viv-sidebar-label">Assinaturas</span>
           </button>
-
           {administrador && (
-            <button
-              type="button"
-              className={`viv-nav-item ${
-                tela === "admin" ? "viv-nav-item--active" : ""
-              }`}
-              title="VIV Admin"
-              aria-label="VIV Admin"
-              aria-current={tela === "admin" ? "page" : undefined}
-              onClick={() => setTela("admin")}
-            >
-              <MenuIcon name="admin" />
-              <span className="viv-sidebar-label">VIV Admin</span>
+            <button type="button" className={`viv-nav-item ${tela === "admin" ? "viv-nav-item--active" : ""}`} title="Viv Admin" aria-label="Viv Admin" aria-current={tela === "admin" ? "page" : undefined} onClick={() => setTela("admin")}>
+              <MenuIcon name="admin" /><span className="viv-sidebar-label">Viv Admin</span>
             </button>
           )}
         </nav>
-
-        <div className="viv-sidebar-label viv-sidebar-card">
-          <div className="viv-sidebar-card-head">
-            <img src={vivLogo} alt="" aria-hidden="true" />
-            <div>
-              <strong>VIV</strong>
-              <small>Controle Financeiro</small>
-            </div>
-          </div>
-          <p>Organize hoje um futuro melhor.</p>
-        </div>
-
         <div className="viv-sidebar-bottom">
-          <button
-            type="button"
-            className={`viv-nav-item ${
-              tela === "configuracoes" ? "viv-nav-item--active" : ""
-            }`}
-            title="Configurações"
-            aria-label="Configurações"
-            aria-current={tela === "configuracoes" ? "page" : undefined}
-            onClick={() => setTela("configuracoes")}
-          >
-            <MenuIcon name="settings" />
-            <span className="viv-sidebar-label">Configurações</span>
+          <button type="button" className={`viv-nav-item ${tela === "configuracoes" ? "viv-nav-item--active" : ""}`} title="Configurações" aria-label="Configurações" aria-current={tela === "configuracoes" ? "page" : undefined} onClick={() => setTela("configuracoes")}>
+            <MenuIcon name="settings" /><span className="viv-sidebar-label">Configurações</span>
           </button>
-
-          <button
-            type="button"
-            className="viv-nav-item viv-nav-exit"
-            title="Sair"
-            aria-label="Sair"
-            onClick={sair}
-          >
-            <MenuIcon name="logout" />
-            <span className="viv-sidebar-label">Sair</span>
+          <button type="button" className="viv-nav-item viv-nav-exit" title="Sair" aria-label="Sair" onClick={sair}>
+            <MenuIcon name="logout" /><span className="viv-sidebar-label">Sair</span>
           </button>
         </div>
       </aside>
-
-      <div className="viv-shell-main">
-        <header className="viv-topbar">
-          <button
-            type="button"
-            className="viv-topbar-menu"
-            aria-label={menuExpandido ? "Recolher menu" : "Expandir menu"}
-            onClick={() => setMenuExpandido(!menuExpandido)}
-          >
-            <MenuIcon name="menu" />
-          </button>
-
-          <form
-            className="viv-topbar-search"
-            role="search"
-            onSubmit={abrirHistoricoPelaBusca}
-          >
-            <MenuIcon name="search" />
-            <input
-              type="search"
-              value={buscaTopo}
-              onChange={(evento) => setBuscaTopo(evento.target.value)}
-              placeholder="Buscar transações, categorias ou descrições..."
-              aria-label="Buscar transações, categorias ou descrições"
-            />
-          </form>
-
-          <div className="viv-topbar-actions">
-            <button
-              type="button"
-              className="viv-topbar-icon viv-topbar-sun"
-              aria-label={
-                tema === "escuro"
-                  ? "Ativar tema claro"
-                  : "Ativar tema escuro"
-              }
-              title={
-                tema === "escuro"
-                  ? "Ativar tema claro"
-                  : "Ativar tema escuro"
-              }
-              aria-pressed={tema === "claro"}
-              onClick={alternarTema}
-            >
-              <MenuIcon name={tema === "escuro" ? "sun" : "moon"} />
-            </button>
-
-            <div className="viv-notification-wrap">
-              <button
-                type="button"
-                className={`viv-topbar-icon viv-topbar-bell ${
-                  notificacoesAbertas ? "viv-topbar-icon--active" : ""
-                }`}
-                aria-label="Notificações"
-                title="Notificações"
-                aria-expanded={notificacoesAbertas}
-                aria-controls="viv-notification-panel"
-                onClick={() =>
-                  setNotificacoesAbertas((aberta) => !aberta)
-                }
-              >
-                <MenuIcon name="bell" />
-                {possuiAviso && <span className="viv-notification-dot" />}
-              </button>
-
-              {notificacoesAbertas && (
-                <div
-                  id="viv-notification-panel"
-                  className="viv-notification-panel"
-                  role="dialog"
-                  aria-label="Central de notificações"
-                >
-                  <div className="viv-notification-header">
-                    <div>
-                      <strong>Notificações</strong>
-                      <span>Central VIV</span>
-                    </div>
-
-                    <button
-                      type="button"
-                      className="viv-notification-close"
-                      aria-label="Fechar notificações"
-                      onClick={() => setNotificacoesAbertas(false)}
-                    >
-                      ×
-                    </button>
-                  </div>
-
-                  <div className="viv-notification-list">
-                    {notificacoes.map((item) => (
-                      <div
-                        key={item.id}
-                        className={`viv-notification-item viv-notification-item--${item.tipo}`}
-                      >
-                        <span className="viv-notification-status">
-                          {item.tipo === "alerta"
-                            ? "!"
-                            : item.tipo === "ok"
-                              ? "✓"
-                              : "i"}
-                        </span>
-
-                        <div>
-                          <strong>{item.titulo}</strong>
-                          <p>{item.texto}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <button
-                    type="button"
-                    className="viv-notification-refresh"
-                    onClick={async () => {
-                      await verificarAcesso();
-                    }}
-                    disabled={verificando}
-                  >
-                    {verificando
-                      ? "Verificando..."
-                      : "Atualizar notificações"}
-                  </button>
-                </div>
-              )}
-            </div>
-
-            <div className="viv-topbar-profile">
-              <div className="viv-topbar-avatar" aria-hidden="true">
-                {inicialUsuario}
-              </div>
-
-              <div className="viv-topbar-user">
-                <strong>{nomeExibicao}</strong>
-                <span>{administrador ? "Administrador" : "Usuário"}</span>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        {tela === "financeiro" && paginaFinanceira === "inicio" && (
-          <div className="viv-topbar-date" aria-label={`Data atual: ${dataTopo}`}>
-            <span className="viv-topbar-date-icon">▣</span>
-            <span>{dataTopo}</span>
-          </div>
+      <main className="viv-shell-content" id="conteudo-principal">
+        {tela === "configuracoes" ? (
+          <Configuracoes usuario={usuario} />
+        ) : tela === "vivia" ? (
+          <VivIA />
+        ) : tela === "assinaturas" ? (
+          <Assinaturas />
+        ) : tela === "admin" && administrador ? (
+          <AdminPanel />
+        ) : (
+          <App pagina={paginaFinanceira} onPaginaChange={setPaginaFinanceira} />
         )}
-
-        <main className="viv-shell-content" id="conteudo-principal">
-          {tela === "configuracoes" ? (
-            <Configuracoes usuario={usuario} />
-          ) : tela === "vivia" ? (
-            <VivIA />
-          ) : tela === "assinaturas" ? (
-            <Assinaturas />
-          ) : tela === "admin" && administrador ? (
-            <AdminPanel />
-          ) : (
-            <App
-              pagina={paginaFinanceira}
-              onPaginaChange={setPaginaFinanceira}
-            />
-          )}
-        </main>
-      </div>
+      </main>
     </div>
   );
 }

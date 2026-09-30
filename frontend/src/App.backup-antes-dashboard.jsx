@@ -95,8 +95,9 @@ function Lista({ registros, categorias }) {
   );
 }
 
-export default function App({ pagina, setPagina }) {
+export default function App({ pagina = "inicio", onPaginaChange }) {
   const [usuario, setUsuario] = useState(null);
+  const [nomePerfil, setNomePerfil] = useState("");
   const [movimentacoes, setMovimentacoes] =
     useState([]);
   const [categorias, setCategorias] =
@@ -104,6 +105,7 @@ export default function App({ pagina, setPagina }) {
 
   const [categoriaId, setCategoriaId] =
     useState("");
+  const setPagina = onPaginaChange || (() => { });
 
   const [tipo, setTipo] = useState("saida");
   const [descricao, setDescricao] =
@@ -141,7 +143,8 @@ export default function App({ pagina, setPagina }) {
 
       const [
         resultadoCategorias,
-        resultadoMovimentacoes
+        resultadoMovimentacoes,
+        resultadoPerfil
       ] = await Promise.all([
         supabase
           .from("categorias")
@@ -155,10 +158,20 @@ export default function App({ pagina, setPagina }) {
           .eq("usuario_id", usuarioAtual.id)
           .order("criado_em", {
             ascending: false
-          })
+          }),
+
+        supabase
+          .from("viv_perfis")
+          .select("nome")
+          .eq("id", usuarioAtual.id)
+          .maybeSingle()
       ]);
 
       if (!ativo) return;
+
+      if (!resultadoPerfil.error) {
+        setNomePerfil(resultadoPerfil.data?.nome?.trim() || "");
+      }
 
       if (resultadoCategorias.error) {
         setMensagem(
@@ -343,6 +356,13 @@ export default function App({ pagina, setPagina }) {
 
   const saldo = entradas - saidas;
 
+  const economia = Math.max(0, saldo);
+
+  const percentualEconomizado =
+    entradas > 0
+      ? Math.max(0, (economia / entradas) * 100)
+      : 0;
+
   // Busca
   const filtradas = movimentacoes.filter(
     (movimentacao) => {
@@ -411,6 +431,7 @@ export default function App({ pagina, setPagina }) {
   );
 
   const nome =
+    nomePerfil ||
     usuario?.user_metadata?.nome ||
     usuario?.email?.split("@")[0] ||
     "Usuário";
@@ -463,126 +484,298 @@ export default function App({ pagina, setPagina }) {
 
         {/* RESUMO */}
 
+        <section className="vivi-indicadores">
+          <article className="vivi-indicador entrada">
+            <div className="vivi-indicador-icone">
+              ↗
+            </div>
+
+            <span>Entradas</span>
+
+            <strong>
+              {moeda(entradas)}
+            </strong>
+
+            <small>
+              Total registrado
+            </small>
+          </article>
+
+          <article className="vivi-indicador saida">
+            <div className="vivi-indicador-icone">
+              ↘
+            </div>
+
+            <span>Saídas</span>
+
+            <strong>
+              {moeda(saidas)}
+            </strong>
+
+            <small>
+              Total registrado
+            </small>
+          </article>
+
+          <article className="vivi-indicador saldo">
+            <div className="vivi-indicador-icone">
+              ▣
+            </div>
+
+            <span>Saldo atual</span>
+
+            <strong>
+              {moeda(saldo)}
+            </strong>
+
+            <small>
+              Entradas menos saídas
+            </small>
+          </article>
+
+          <article className="vivi-indicador total">
+            <div className="vivi-indicador-icone">
+              ◉
+            </div>
+
+            <span>Transações</span>
+
+            <strong>
+              {movimentacoes.length}
+            </strong>
+
+            <small>
+              Total registrado
+            </small>
+          </article>
+        </section>
 
         {/* PAINEL INICIAL */}
 
         {pagina === "inicio" && (
-          <div className="vivi-grade">
-            <section className="vivi-bloco vivi-grafico">
-              <div className="vivi-bloco-titulo">
-                <div>
-                  <h2>
-                    Entradas vs. Saídas
-                  </h2>
+          <div className="viv-dashboard">
 
-                  <p>
-                    Últimos seis meses
-                    com registros
-                  </p>
+            <section className="viv-dashboard-cards">
+
+              <article className="viv-dash-card viv-dash-saldo">
+                <div className="viv-dash-card-topo">
+                  <span>Saldo disponível</span>
+                  <div className="viv-dash-icon">▣</div>
                 </div>
 
-                <div className="vivi-legenda">
-                  <span>● Entradas</span>
-                  <span>● Saídas</span>
-                </div>
-              </div>
+                <strong>{moeda(saldo)}</strong>
 
-              {grafico.length === 0 ? (
-                <p>
-                  Registre uma movimentação
-                  para visualizar o gráfico.
-                </p>
-              ) : (
-                <div className="vivi-barras">
-                  {grafico.map(
-                    ([mes, valores]) => (
+                <small>
+                  Entradas menos despesas
+                </small>
+              </article>
+
+              <article className="viv-dash-card viv-dash-entrada">
+                <div className="viv-dash-card-topo">
+                  <span>Receitas</span>
+                  <div className="viv-dash-icon">↗</div>
+                </div>
+
+                <strong>{moeda(entradas)}</strong>
+
+                <small>
+                  Total recebido
+                </small>
+              </article>
+
+              <article className="viv-dash-card viv-dash-saida">
+                <div className="viv-dash-card-topo">
+                  <span>Despesas</span>
+                  <div className="viv-dash-icon">↘</div>
+                </div>
+
+                <strong>{moeda(saidas)}</strong>
+
+                <small>
+                  Total gasto
+                </small>
+              </article>
+
+              <article className="viv-dash-card viv-dash-economia">
+                <div className="viv-dash-card-topo">
+                  <span>Economia</span>
+                  <div className="viv-dash-icon">◎</div>
+                </div>
+
+                <strong>{moeda(economia)}</strong>
+
+                <small>
+                  {percentualEconomizado.toFixed(1)}% das receitas
+                </small>
+              </article>
+
+            </section>
+
+            <section className="viv-dashboard-grid">
+
+              <article className="viv-dashboard-panel viv-dashboard-chart">
+
+                <div className="viv-dashboard-panel-title">
+                  <div>
+                    <h2>Visão financeira</h2>
+                    <p>Receitas e despesas dos últimos meses</p>
+                  </div>
+
+                  <div className="viv-dashboard-legend">
+                    <span className="entrada">● Receitas</span>
+                    <span className="saida">● Despesas</span>
+                  </div>
+                </div>
+
+                {grafico.length === 0 ? (
+                  <div className="viv-dashboard-empty">
+                    Registre movimentações para visualizar o gráfico.
+                  </div>
+                ) : (
+                  <div className="viv-dashboard-bars">
+
+                    {grafico.map(([mes, valores]) => (
                       <div
-                        className="vivi-grupo"
+                        className="viv-dashboard-bar-group"
                         key={mes}
                       >
-                        <div className="vivi-colunas">
+
+                        <div className="viv-dashboard-bar-area">
+
                           <div
-                            className="barra-entrada"
-                            title={
-                              "Entradas: " +
-                              moeda(
-                                valores.entrada
-                              )
-                            }
+                            className="viv-dashboard-bar entrada"
+                            title={`Receitas: ${moeda(valores.entrada)}`}
                             style={{
                               height:
-                                (
-                                  valores.entrada /
-                                  maior
-                                ) *
-                                  100 +
-                                "%"
+                                Math.max(
+                                  3,
+                                  (valores.entrada / maior) * 100
+                                ) + "%"
                             }}
                           />
 
                           <div
-                            className="barra-saida"
-                            title={
-                              "Saídas: " +
-                              moeda(
-                                valores.saida
-                              )
-                            }
+                            className="viv-dashboard-bar saida"
+                            title={`Despesas: ${moeda(valores.saida)}`}
                             style={{
                               height:
-                                (
-                                  valores.saida /
-                                  maior
-                                ) *
-                                  100 +
-                                "%"
+                                Math.max(
+                                  3,
+                                  (valores.saida / maior) * 100
+                                ) + "%"
                             }}
                           />
+
                         </div>
 
                         <small>
-                          {mes.slice(5)}/
-                          {mes.slice(2, 4)}
+                          {mes.slice(5)}/{mes.slice(2, 4)}
                         </small>
+
                       </div>
-                    )
-                  )}
+                    ))}
+
+                  </div>
+                )}
+
+              </article>
+
+              <article className="viv-dashboard-panel viv-dashboard-recentes">
+
+                <div className="viv-dashboard-panel-title">
+                  <div>
+                    <h2>Últimas transações</h2>
+                    <p>Movimentações recentes</p>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="viv-dashboard-link"
+                    onClick={() => setPagina("historico")}
+                  >
+                    Ver todas →
+                  </button>
                 </div>
-              )}
+
+                <Lista
+                  registros={movimentacoes.slice(0, 5)}
+                  categorias={categorias}
+                />
+
+              </article>
+
             </section>
 
-            <section className="vivi-bloco vivi-recentes">
-              <div className="vivi-bloco-titulo">
+            <section className="viv-dashboard-bottom">
+
+              <article className="viv-dashboard-panel">
+
+                <div className="viv-dashboard-panel-title">
+                  <div>
+                    <h2>Resumo financeiro</h2>
+                    <p>Visão geral das suas finanças</p>
+                  </div>
+                </div>
+
+                <div className="viv-dashboard-summary">
+
+                  <div>
+                    <span>Receitas</span>
+                    <strong className="entrada">
+                      {moeda(entradas)}
+                    </strong>
+                  </div>
+
+                  <div>
+                    <span>Despesas</span>
+                    <strong className="saida">
+                      {moeda(saidas)}
+                    </strong>
+                  </div>
+
+                  <div>
+                    <span>Saldo</span>
+                    <strong>
+                      {moeda(saldo)}
+                    </strong>
+                  </div>
+
+                  <div>
+                    <span>Transações</span>
+                    <strong>
+                      {movimentacoes.length}
+                    </strong>
+                  </div>
+
+                </div>
+
+              </article>
+
+              <article className="viv-dashboard-panel viv-dashboard-assistente">
+
+                <div className="viv-dashboard-ai-icon">
+                  V
+                </div>
+
                 <div>
+                  <span>VIV IA</span>
+
                   <h2>
-                    Últimas transações
+                    Sua assistente financeira
                   </h2>
 
                   <p>
-                    Suas movimentações recentes
+                    Registre movimentações e consulte suas
+                    finanças conversando com a VIV.
                   </p>
                 </div>
 
-                <button
-                  className="vivi-link"
-                  onClick={() =>
-                    setPagina("historico")
-                  }
-                >
-                  Ver todas →
-                </button>
-              </div>
+              </article>
 
-              <Lista
-                registros={
-                  movimentacoes.slice(0, 5)
-                }
-                categorias={categorias}
-              />
             </section>
+
           </div>
         )}
-
         {/* NOVA TRANSAÇÃO */}
 
         {pagina === "nova" && (
