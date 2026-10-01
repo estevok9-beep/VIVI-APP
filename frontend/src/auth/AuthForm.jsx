@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { supabase } from "../supabase";
 import "./AuthForm.css";
+import vivLogo from "../assets/viv-logo-centralizado.png";
 
 export default function AuthForm() {
   const [email, setEmail] = useState("");
@@ -69,7 +70,7 @@ export default function AuthForm() {
       <div className="vivi-auth-layout">
         <section className="vivi-auth-brand">
           <div className="vivi-auth-brand-top">
-            <div className="vivi-auth-symbol">V</div>
+            <div className="vivi-auth-symbol"><img src={vivLogo} alt="VIV" /></div>
             <span>Viv FINANCE</span>
           </div>
 
@@ -115,7 +116,7 @@ export default function AuthForm() {
         <section className="vivi-auth-panel">
           <div className="vivi-auth-card">
             <div className="vivi-auth-mobile-logo">
-              <div className="vivi-auth-symbol">V</div>
+              <div className="vivi-auth-symbol"><img src={vivLogo} alt="VIV" /></div>
               <span>Viv</span>
             </div>
 

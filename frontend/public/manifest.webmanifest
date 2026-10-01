@@ -1,25 +1,20 @@
 {
-  "name": "Viv - Controle Financeiro",
+  "name": "Viv | Controle Financeiro",
   "short_name": "Viv",
-  "description": "Organize entradas, saídas, categorias e metas financeiras.",
-  "lang": "pt-BR",
   "start_url": "/",
-  "scope": "/",
   "display": "standalone",
-  "background_color": "#091523",
+  "background_color": "#050d19",
   "theme_color": "#0b1c2e",
   "icons": [
     {
       "src": "/icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/png"
     },
     {
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/png"
     },
     {
       "src": "/icons/maskable-512.png",

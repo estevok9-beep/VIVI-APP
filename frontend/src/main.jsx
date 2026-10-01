@@ -474,6 +474,92 @@ function TelaConvite({
 }
 
 // ==========================================
+// SPLASH VIV — LOGO FIXA + ARCO SEMPRE ANIMADO
+// ==========================================
+function SplashViv() {
+  return (
+    <main className="viv-launch-splash" aria-label="Abrindo VIV">
+      <style>{`
+        .viv-launch-splash {
+          min-height: 100vh;
+          min-height: 100dvh;
+          display: grid;
+          place-items: center;
+          overflow: hidden;
+          background:
+            radial-gradient(circle at 50% 48%, rgba(16,111,200,.16), transparent 32%),
+            radial-gradient(circle at 50% 55%, rgba(37,229,203,.08), transparent 42%),
+            #050d19;
+        }
+
+        .viv-launch-logo {
+          position: relative;
+          width: min(68vw, 290px);
+          aspect-ratio: 1;
+          display: grid;
+          place-items: center;
+          filter: drop-shadow(0 0 20px rgba(37,229,203,.16));
+        }
+
+        .viv-launch-logo img {
+          position: relative;
+          z-index: 1;
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          display: block;
+        }
+
+        .viv-launch-spinner {
+          position: absolute;
+          z-index: 3;
+          inset: 2%;
+          border-radius: 50%;
+          border: 4px solid transparent;
+          border-top-color: #ffffff;
+          border-right-color: #0fe7ff;
+          border-bottom-color: #246dff;
+          box-shadow:
+            0 0 8px rgba(15,231,255,.9),
+            inset 0 0 8px rgba(15,231,255,.35);
+          animation-name: vivSpinForcado;
+          animation-duration: .85s;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+          transform-origin: 50% 50%;
+          will-change: transform;
+          pointer-events: none;
+        }
+
+        .viv-launch-spinner::after {
+          content: "";
+          position: absolute;
+          width: 9px;
+          height: 9px;
+          right: 11%;
+          top: 10%;
+          border-radius: 50%;
+          background: #ffffff;
+          box-shadow:
+            0 0 8px #0fe7ff,
+            0 0 18px #246dff;
+        }
+
+        @keyframes vivSpinForcado {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
+
+      <div className="viv-launch-logo">
+        <img src={vivLogo} alt="VIV IA Financeira" />
+        <span className="viv-launch-spinner" aria-hidden="true" />
+      </div>
+    </main>
+  );
+}
+
+// ==========================================
 
 // APLICATIVO PRINCIPAL
 
@@ -551,6 +637,16 @@ function Viv() {
     setCarregando
 
   ] = useState(true);
+
+  const [splashMinimaConcluida, setSplashMinimaConcluida] = useState(false);
+
+  useEffect(() => {
+    const timerSplash = window.setTimeout(() => {
+      setSplashMinimaConcluida(true);
+    }, 2000);
+
+    return () => window.clearTimeout(timerSplash);
+  }, []);
 
   const [
 
@@ -960,38 +1056,8 @@ function Viv() {
 
   // ========================================
 
-  if (carregando) {
-
-    return (
-
-      <main
-
-        style={{
-
-          minHeight: "100vh",
-
-          display: "grid",
-
-          placeItems: "center",
-
-          background: "#081b2d",
-
-          color: "#00e59a",
-
-          fontSize: 22,
-
-          fontWeight: 700
-
-        }}
-
-      >
-
-        Carregando Viv...
-
-      </main>
-
-    );
-
+  if (carregando || !splashMinimaConcluida) {
+    return <SplashViv />;
   }
 
   // ========================================

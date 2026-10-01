@@ -13,6 +13,22 @@ export default function Configuracoes({ usuario }) {
   const [erro, setErro] = useState("");
   const [salvando, setSalvando] = useState(false);
   const [enviando, setEnviando] = useState(false);
+  const [tamanhoFonte, setTamanhoFonte] = useState(() => {
+    return localStorage.getItem("viv-tamanho-fonte") || "normal";
+  });
+
+  useEffect(() => {
+    const tamanhos = {
+      normal: "100%",
+      grande: "112.5%",
+      "extra-grande": "125%",
+    };
+
+    document.documentElement.style.fontSize =
+      tamanhos[tamanhoFonte] || tamanhos.normal;
+
+    localStorage.setItem("viv-tamanho-fonte", tamanhoFonte);
+  }, [tamanhoFonte]);
 
   useEffect(() => {
     let ativo = true;
@@ -115,6 +131,57 @@ export default function Configuracoes({ usuario }) {
           </form>
         </section>
       </div>
+      <section className="viv-settings-card viv-settings-accessibility">
+        <div className="viv-settings-accessibility-header">
+          <div>
+            <span>ACESSIBILIDADE</span>
+            <h2>Tamanho da fonte</h2>
+            <p>Escolha o tamanho dos textos do Viv.</p>
+          </div>
+          <strong aria-live="polite">
+            {tamanhoFonte === "normal"
+              ? "Normal"
+              : tamanhoFonte === "grande"
+                ? "Grande"
+                : "Extra grande"}
+          </strong>
+        </div>
+
+        <div className="viv-font-options" role="group" aria-label="Tamanho da fonte">
+          <button
+            type="button"
+            className={tamanhoFonte === "normal" ? "active" : ""}
+            aria-pressed={tamanhoFonte === "normal"}
+            onClick={() => setTamanhoFonte("normal")}
+          >
+            <span className="viv-font-preview viv-font-preview-normal">Aa</span>
+            <span>Normal</span>
+          </button>
+
+          <button
+            type="button"
+            className={tamanhoFonte === "grande" ? "active" : ""}
+            aria-pressed={tamanhoFonte === "grande"}
+            onClick={() => setTamanhoFonte("grande")}
+          >
+            <span className="viv-font-preview viv-font-preview-grande">Aa</span>
+            <span>Grande</span>
+          </button>
+
+          <button
+            type="button"
+            className={tamanhoFonte === "extra-grande" ? "active" : ""}
+            aria-pressed={tamanhoFonte === "extra-grande"}
+            onClick={() => setTamanhoFonte("extra-grande")}
+          >
+            <span className="viv-font-preview viv-font-preview-extra">Aa</span>
+            <span>Extra grande</span>
+          </button>
+        </div>
+
+        <small>A escolha fica salva neste dispositivo.</small>
+      </section>
+
       <section className="viv-settings-card viv-settings-history"><h2>Meus chamados</h2>
         {tickets.length === 0 ? <p>Você ainda não abriu nenhum chamado.</p> : tickets.map((ticket) => (
           <article key={ticket.id}><div><strong>{ticket.assunto}</strong><span className="viv-settings-status">{ticket.status}</span></div>

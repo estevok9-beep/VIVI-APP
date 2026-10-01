@@ -585,10 +585,6 @@ export default function App({ pagina = "inicio", onPaginaChange }) {
               Seu dinheiro, suas decisões.
             </p>
           </div>
-
-          <div className="vivi-avatar">
-            {nome.charAt(0).toUpperCase()}
-          </div>
         </header>
 
         {mensagem && (
