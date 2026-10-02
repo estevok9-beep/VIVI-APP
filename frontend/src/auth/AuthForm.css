@@ -1,534 +1,580 @@
-
-/* VIVI 2.5 — NEON GLASS */
-/* Estilos isolados da tela de autenticação */
-
-.vivi-auth {
-  --auth-bg: #050d19;
-  --auth-text: #f0faff;
-  --auth-muted: #92a7b9;
-  --auth-neon: #25e5cb;
-
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  min-height: 100dvh;
+html,
+body,
+#root {
   width: 100%;
-  padding: 28px;
-  overflow: hidden;
-  background: var(--auth-bg);
-  color: var(--auth-text);
-  font-family: Inter, "Segoe UI", Arial, sans-serif;
-  box-sizing: border-box;
+  min-height: 100%;
+  margin: 0;
 }
 
+body {
+  min-height: 100vh;
+}
+
+.vivi-auth,
 .vivi-auth *,
 .vivi-auth *::before,
 .vivi-auth *::after {
   box-sizing: border-box;
 }
 
-.vivi-auth-glow {
-  position: absolute;
-  z-index: -1;
-  width: 560px;
-  height: 560px;
-  border-radius: 50%;
-  pointer-events: none;
-  filter: blur(100px);
-}
-
-.vivi-auth-glow-1 {
-  top: -220px;
-  left: -180px;
-  background: rgba(0, 201, 186, 0.17);
-}
-
-.vivi-auth-glow-2 {
-  right: -200px;
-  bottom: -250px;
-  background: rgba(15, 93, 190, 0.23);
-}
-
-.vivi-auth-grid {
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  opacity: 0.22;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(61, 209, 218, 0.09) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(61, 209, 218, 0.09) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: linear-gradient(to right, black, transparent);
-}
-
-.vivi-auth-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
-  width: min(1180px, 100%);
-  min-height: 650px;
-  border: 1px solid rgba(67, 202, 209, 0.16);
-  border-radius: 28px;
-  background: rgba(10, 24, 42, 0.66);
-  box-shadow:
-    0 35px 110px rgba(0, 0, 0, 0.36),
-    0 0 60px rgba(20, 190, 177, 0.04);
-  overflow: hidden;
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-}
-
-.vivi-auth-brand {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 48px;
-  background:
-    radial-gradient(
-      ellipse at 15% 70%,
-      rgba(16, 202, 181, 0.17),
-      transparent 60%
-    ),
-    linear-gradient(
-      135deg,
-      rgba(16, 49, 73, 0.84),
-      rgba(5, 16, 31, 0.58)
-    );
-  border-right: 1px solid rgba(67, 202, 209, 0.13);
-}
-
-.vivi-auth-brand-top,
-.vivi-auth-mobile-logo {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: 3px;
-}
-
-.vivi-auth-symbol {
-  display: grid;
-  place-items: center;
-  width: 46px;
-  height: 46px;
-  flex-shrink: 0;
-  border: 1px solid rgba(37, 229, 203, 0.75);
-  border-radius: 15px;
-  background: linear-gradient(
-    145deg,
-    rgba(36, 229, 203, 0.25),
-    rgba(0, 96, 117, 0.14)
-  );
-  color: #4af7e0;
-  font-size: 27px;
-  font-weight: 900;
-  letter-spacing: -2px;
-  box-shadow: 0 0 25px rgba(37, 229, 203, 0.18);
-}
-
-.vivi-auth-brand-content {
-  max-width: 510px;
-}
-
-.vivi-auth-tag,
-.vivi-auth-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  color: #57e7d4;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 2px;
-}
-
-.vivi-auth-tag {
-  padding: 10px 14px;
-  border: 1px solid rgba(37, 229, 203, 0.2);
-  border-radius: 30px;
-  background: rgba(37, 229, 203, 0.06);
-}
-
-.vivi-auth-status-dot {
-  width: 7px;
-  height: 7px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  background: var(--auth-neon);
-  box-shadow: 0 0 12px var(--auth-neon);
-}
-
-.vivi-auth-brand-content h1 {
-  margin: 27px 0 20px;
-  color: #f0faff;
-  font-size: clamp(32px, 3.5vw, 52px);
-  font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: -1.8px;
-}
-
-.vivi-auth-brand-content h1 span {
-  color: #32e9d0;
-}
-
-.vivi-auth-brand-content > p {
-  max-width: 430px;
-  margin: 0;
-  color: #a4bbca;
-  font-size: 15px;
-  line-height: 1.9;
-}
-
-.vivi-auth-features {
-  display: grid;
-  gap: 18px;
-  margin-top: 42px;
-}
-
-.vivi-auth-features > div {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  color: #c9dce6;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.vivi-auth-feature-icon {
-  display: grid;
-  place-items: center;
-  width: 33px;
-  height: 33px;
-  border: 1px solid rgba(37, 229, 203, 0.2);
-  border-radius: 10px;
-  background: rgba(37, 229, 203, 0.07);
-  color: var(--auth-neon);
-  font-size: 20px;
-}
-
-.vivi-auth-brand-footer {
-  color: #58798b;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 2px;
-}
-
-.vivi-auth-panel {
+.vivi-auth {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 45px 38px;
-  background: rgba(5, 13, 26, 0.46);
-}
 
-.vivi-auth-card {
   width: 100%;
-  max-width: 390px;
-  padding: 32px 26px;
-  border: 1px solid rgba(100, 207, 219, 0.14);
-  border-radius: 23px;
-  background: linear-gradient(
-    150deg,
-    rgba(30, 54, 73, 0.42),
-    rgba(8, 21, 38, 0.48)
-  );
-  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.18);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  margin: 0;
+  padding: 20px;
+
+  overflow-x: hidden;
+
+  background:
+    linear-gradient(
+      rgba(0, 5, 18, 0.08),
+      rgba(0, 5, 18, 0.18)
+    ),
+    url("../assets/viv-login-bg.png") center center / cover no-repeat;
+
+  color: #ffffff;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
 }
 
-.vivi-auth-mobile-logo {
+.vivi-auth-light {
   display: none;
 }
 
-.vivi-auth-card-heading h2 {
-  margin: 15px 0 10px;
-  color: #f0faff;
-  font-size: clamp(24px, 2.5vw, 29px);
-  font-weight: 800;
-  letter-spacing: -0.8px;
-  line-height: 1.25;
+/* PAINEL CENTRAL */
+
+.vivi-login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: min(540px, 94vw);
+
+  margin: 0 auto;
+  padding: 18px 22px;
+
+  border: 1px solid rgba(50, 120, 220, 0.35);
+  border-radius: 20px;
+
+  background: rgba(1, 9, 27, 0.78);
+
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.45),
+    0 0 40px rgba(0, 115, 255, 0.08);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
-.vivi-auth-card-heading > p {
-  margin: 0 0 29px;
-  color: var(--auth-muted);
-  font-size: 13px;
-  line-height: 1.7;
+/* LOGO */
+
+.vivi-login-header {
+  width: 100%;
+  margin-bottom: 14px;
+  text-align: center;
 }
 
-.vivi-auth-form {
-  display: grid;
-  gap: 19px;
-}
-
-.vivi-auth-field label {
+.vivi-login-logo {
   display: block;
-  margin-bottom: 9px;
-  color: #d5e6ee;
-  font-size: 12px;
-  font-weight: 600;
+
+  width: 135px;
+  height: 135px;
+
+  margin: 0 auto 3px;
+
+  object-fit: contain;
+
+  filter:
+    drop-shadow(0 0 12px rgba(0, 210, 255, 0.45))
+    drop-shadow(0 0 25px rgba(0, 90, 255, 0.25));
 }
 
-.vivi-auth-input-wrap {
+.vivi-login-slogan {
+  margin: 0;
+
+  color: #e0e9f5;
+
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+.vivi-login-slogan strong {
+  color: #11d9ff;
+  font-weight: 800;
+}
+
+/* FORMULÁRIO */
+
+.vivi-login-form {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+
+  gap: 10px;
+}
+
+.vivi-login-field {
+  width: 100%;
+}
+
+.vivi-login-input {
   display: flex;
   align-items: center;
+
   width: 100%;
-  min-height: 53px;
-  padding: 0 13px;
-  border: 1px solid rgba(130, 172, 194, 0.21);
+  height: 50px;
+
+  padding: 0 15px;
+
+  border: 1px solid rgba(91, 139, 218, 0.60);
   border-radius: 12px;
-  background: rgba(4, 14, 27, 0.65);
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+
+  background: rgba(1, 8, 24, 0.88);
 }
 
-.vivi-auth-input-wrap:focus-within {
-  border-color: rgba(37, 229, 203, 0.85);
-  box-shadow: 0 0 0 3px rgba(37, 229, 203, 0.1);
+.vivi-login-input:focus-within {
+  border-color: #11ddff;
+
+  box-shadow:
+    0 0 0 3px rgba(17, 221, 255, 0.07),
+    0 0 20px rgba(17, 221, 255, 0.10);
 }
 
-.vivi-auth-input-icon {
-  flex-shrink: 0;
-  margin-right: 12px;
-  color: #51c5c0;
-  font-size: 18px;
-}
-
-.vivi-auth-input-wrap input {
-  width: 100%;
-  min-width: 0;
-  height: 51px;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: #f0faff;
-  font: inherit;
-  font-size: 13px;
-}
-
-.vivi-auth-input-wrap input::placeholder {
-  color: #657f91;
-}
-
-.vivi-auth-show-password {
-  flex-shrink: 0;
-  padding: 7px 0 7px 8px;
-  border: 0;
-  background: transparent;
-  color: #53d8c9;
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.vivi-auth-submit {
+.vivi-input-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  width: 100%;
-  min-height: 53px;
-  margin-top: 8px;
-  padding: 13px 18px;
+
+  width: 24px;
+
+  margin-right: 10px;
+
+  color: #a9bce6;
+
+  font-size: 17px;
+}
+
+.vivi-login-input input {
+  flex: 1;
+
+  min-width: 0;
+  height: 100%;
+
+  margin: 0;
+  padding: 0;
+
   border: 0;
-  border-radius: 12px;
-  background: linear-gradient(110deg, #26e2c9, #14adba);
-  color: #04222d;
+  outline: 0;
+
+  background: transparent;
+
+  color: #ffffff;
+
   font: inherit;
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 14px;
+}
+
+.vivi-login-input input::placeholder {
+  color: #9ba9c0;
+  opacity: 1;
+}
+
+.vivi-password-eye {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #9aafdc;
+
+  font-size: 20px;
+
   cursor: pointer;
-  box-shadow: 0 10px 28px rgba(23, 203, 188, 0.18);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
 }
 
-.vivi-auth-submit:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 34px rgba(23, 203, 188, 0.29);
+.vivi-forgot {
+  display: block;
+
+  margin: 5px 2px 0 auto;
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #1499ff;
+
+  font: inherit;
+  font-size: 11px;
+
+  cursor: pointer;
 }
 
-.vivi-auth-submit:disabled {
+/* ENTRAR */
+
+.vivi-login-submit {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 51px;
+
+  margin-top: 2px;
+
+  border: 1px solid #19dfff;
+  border-radius: 12px;
+
+  background: linear-gradient(
+    100deg,
+    #09c6f7 0%,
+    #087dff 55%,
+    #3151ff 100%
+  );
+
+  color: #ffffff;
+
+  font: inherit;
+  font-size: 17px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  box-shadow: 0 0 18px rgba(0, 199, 255, 0.25);
+}
+
+.vivi-login-submit strong {
+  position: absolute;
+  right: 19px;
+
+  font-size: 25px;
+  font-weight: 300;
+}
+
+.vivi-login-submit:disabled {
   opacity: 0.6;
   cursor: wait;
 }
 
-.vivi-auth-submit span {
-  font-size: 19px;
-}
+/* MENSAGENS */
 
 .vivi-auth-message {
-  padding: 12px;
-  border-radius: 10px;
-  font-size: 12px;
-  line-height: 1.6;
-  overflow-wrap: anywhere;
+  width: 100%;
+
+  padding: 9px 11px;
+
+  border-radius: 9px;
+
+  font-size: 11px;
 }
 
 .vivi-auth-message.sucesso {
-  border: 1px solid rgba(37, 229, 203, 0.28);
-  background: rgba(37, 229, 203, 0.09);
-  color: #83f3e2;
+  border: 1px solid rgba(31, 235, 149, 0.35);
+  background: rgba(31, 235, 149, 0.09);
+  color: #8affc7;
 }
 
 .vivi-auth-message.erro {
-  border: 1px solid rgba(255, 117, 128, 0.25);
-  background: rgba(255, 117, 128, 0.08);
-  color: #ff9da7;
+  border: 1px solid rgba(255, 94, 111, 0.35);
+  background: rgba(255, 94, 111, 0.09);
+  color: #ffa2ad;
 }
 
-.vivi-auth-divider {
+/* OU */
+
+.vivi-login-or {
   display: flex;
   align-items: center;
-  gap: 13px;
-  margin: 27px 0 22px;
-  color: #58768b;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1.4px;
-  white-space: nowrap;
+
+  width: 72%;
+
+  gap: 16px;
+
+  margin: 11px 0;
 }
 
-.vivi-auth-divider > span:first-child,
-.vivi-auth-divider > span:last-child {
+.vivi-login-or span {
   flex: 1;
   height: 1px;
-  background: rgba(128, 170, 192, 0.15);
+
+  background: rgba(112, 147, 203, 0.55);
 }
 
-.vivi-auth-switch {
+.vivi-login-or p {
   margin: 0;
-  color: #93aaba;
+
+  color: #b9c5d8;
+
   font-size: 12px;
-  text-align: center;
-  line-height: 1.8;
 }
 
-.vivi-auth-switch button {
-  margin-left: 5px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #37e9d1;
-  font: inherit;
-  font-weight: 800;
-  cursor: pointer;
-}
+/* CRIAR CONTA */
 
-.vivi-auth-switch button:hover,
-.vivi-auth-show-password:hover {
-  text-decoration: underline;
-}
-
-.vivi-auth-security {
+.vivi-create-account {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  margin-top: 32px;
-  color: #678596;
-  font-size: 10px;
-}
 
-.vivi-auth-security span {
-  color: #35cbb8;
+  gap: 11px;
+
+  width: 100%;
+  height: 49px;
+
+  padding: 0 14px;
+
+  border: 2px solid #09cfff;
+  border-radius: 12px;
+
+  background: rgba(1, 8, 24, 0.86);
+
+  color: #ffffff;
+
+  font: inherit;
   font-size: 15px;
+
+  cursor: pointer;
+
+  box-shadow: 0 0 16px rgba(0, 195, 255, 0.10);
 }
 
-/* TABLETS E CELULARES */
-
-@media (max-width: 850px) {
-  .vivi-auth {
-    padding: 18px;
-  }
-
-  .vivi-auth-layout {
-    grid-template-columns: 1fr;
-    width: min(480px, 100%);
-    min-height: auto;
-  }
-
-  .vivi-auth-brand {
-    display: none;
-  }
-
-  .vivi-auth-panel {
-    padding: 20px;
-  }
-
-  .vivi-auth-card {
-    max-width: none;
-    padding: 25px 22px;
-  }
-
-  .vivi-auth-mobile-logo {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 34px;
-  }
+.vivi-user-icon {
+  color: #a9bce4;
+  font-size: 19px;
 }
 
-@media (max-width: 480px) {
+/* ÁREA TESTE GRÁTIS */
+
+.vivi-trial-area {
+  position: relative;
+
+  width: 100%;
+
+  margin-top: 25px;
+  padding: 22px 11px 11px;
+
+  border: 1px solid rgba(29, 108, 255, 0.64);
+  border-radius: 12px;
+
+  background: rgba(1, 8, 24, 0.82);
+}
+
+.vivi-new-label {
+  position: absolute;
+
+  top: -14px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  padding: 5px 14px;
+
+  border: 1px solid #18bfff;
+  border-radius: 9px;
+
+  background: linear-gradient(
+    180deg,
+    #1779f0,
+    #06449f
+  );
+
+  color: #ffffff;
+
+  font-size: 10px;
+
+  white-space: nowrap;
+
+  box-shadow: 0 0 17px rgba(0, 181, 255, 0.30);
+}
+
+/* WHATSAPP */
+
+.vivi-whatsapp-button {
+  display: grid;
+
+  grid-template-columns: 42px 1fr 29px;
+
+  align-items: center;
+
+  width: 100%;
+  min-height: 63px;
+
+  padding: 7px 12px;
+
+  border: 2px solid #2aff8b;
+  border-radius: 16px;
+
+  background: linear-gradient(
+    100deg,
+    #008f43,
+    #00c95b,
+    #00aa4b
+  );
+
+  color: #ffffff;
+
+  text-decoration: none;
+
+  box-shadow:
+    0 0 17px rgba(0, 255, 124, 0.48),
+    0 0 30px rgba(0, 255, 124, 0.12);
+}
+
+.vivi-whatsapp-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+
+  color: #ffffff;
+
+  font-size: 14px;
+}
+
+.vivi-whatsapp-copy {
+  display: flex;
+  flex-direction: column;
+
+  text-align: center;
+}
+
+.vivi-whatsapp-copy strong {
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.vivi-whatsapp-copy small {
+  margin-top: 2px;
+
+  color: #c2ffe1;
+
+  font-size: 8px;
+}
+
+.vivi-whatsapp-arrow {
+  justify-self: end;
+
+  font-size: 23px;
+}
+
+/* BENEFÍCIOS */
+
+.vivi-login-benefits {
+  display: grid;
+
+  grid-template-columns:
+    1fr auto
+    1fr auto
+    1fr;
+
+  align-items: center;
+
+  width: 100%;
+
+  margin-top: 14px;
+}
+
+.vivi-login-benefits > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+}
+
+.vivi-login-benefits > div > span {
+  color: #258dff;
+
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.vivi-login-benefits p {
+  margin: 0;
+
+  color: #a4b3c9;
+
+  font-size: 7px;
+  line-height: 1.35;
+}
+
+.vivi-login-benefits i {
+  width: 1px;
+  height: 25px;
+
+  background: rgba(91, 130, 190, 0.48);
+}
+
+/* CELULAR */
+
+@media (max-width: 600px) {
   .vivi-auth {
     align-items: flex-start;
-    padding: 12px;
+
+    padding: 10px;
+
+    background:
+      linear-gradient(
+        rgba(0, 5, 18, 0.10),
+        rgba(0, 5, 18, 0.22)
+      ),
+      url("../assets/viv-login-bg.png")
+        center center / cover no-repeat;
   }
 
-  .vivi-auth-layout {
-    border-radius: 20px;
+  .vivi-login {
+    width: min(390px, 100%);
+
+    padding: 14px;
   }
 
-  .vivi-auth-panel {
-    padding: 12px;
+  .vivi-login-logo {
+    width: 115px;
+    height: 115px;
   }
 
-  .vivi-auth-card {
-    padding: 27px 17px;
-    border-radius: 16px;
+  .vivi-login-slogan {
+    font-size: 14px;
   }
 
-  .vivi-auth-card-heading h2 {
-    font-size: 25px;
+  .vivi-login-input {
+    height: 47px;
   }
 
-  .vivi-auth-glow {
-    width: 320px;
-    height: 320px;
+  .vivi-login-submit {
+    height: 48px;
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  .vivi-auth *,
-  .vivi-auth *::before,
-  .vivi-auth *::after {
-    transition: none !important;
-    animation: none !important;
+  .vivi-create-account {
+    height: 47px;
   }
-}
 
+  .vivi-whatsapp-copy strong {
+    font-size: 13px;
+  }
 
-/* VIV — emblema centralizado e uniforme */
-.vivi-auth-symbol {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  padding: 2px;
-  line-height: 0;
-}
-
-.vivi-auth-symbol img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: 50% 50%;
-  transform: none;
+  .vivi-login-benefits p {
+    font-size: 7px;
+  }
 }

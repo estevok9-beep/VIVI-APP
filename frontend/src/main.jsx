@@ -639,6 +639,7 @@ function Viv() {
   ] = useState(true);
 
   const [splashMinimaConcluida, setSplashMinimaConcluida] = useState(false);
+  const [recuperandoSenha, setRecuperandoSenha] = useState(false);
 
   useEffect(() => {
     const timerSplash = window.setTimeout(() => {
@@ -876,7 +877,17 @@ function Viv() {
 
       supabase.auth.onAuthStateChange(
 
-        () => {
+        (event) => {
+
+          if (event === "PASSWORD_RECOVERY") {
+
+            setRecuperandoSenha(true);
+
+            setCarregando(false);
+
+            return;
+
+          }
 
           // Evita executar chamadas do Supabase
 
@@ -1066,7 +1077,7 @@ function Viv() {
 
   // ========================================
 
-  if (!usuario) {
+  if (recuperandoSenha || !usuario) {
 
     return <AuthForm />;
   }
