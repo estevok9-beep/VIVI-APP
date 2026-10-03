@@ -9,10 +9,7 @@ const headers = {
 };
 
 const resposta = (dados: unknown, status = 200) =>
-  new Response(JSON.stringify(dados), {
-    status,
-    headers,
-  });
+  new Response(JSON.stringify(dados), { status, headers });
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -27,35 +24,60 @@ Deno.serve(async (req) => {
   }
 
   try {
-    /*
-     * 1. Usuário precisa estar autenticado na VIV.
-     */
-    const authorization =
-      req.headers.get("Authorization") || "";
-
-    if (!authorization.startsWith("Bearer ")) {
-      return resposta(
-        { erro: "Autenticação obrigatória" },
-        401,
-      );
-    }
-
     const supabaseUrl =
       Deno.env.get("SUPABASE_URL");
 
-    const anonKey =
+    const supabaseAnonKey =
       Deno.env.get("SUPABASE_ANON_KEY");
 
-    if (!supabaseUrl || !anonKey) {
+    const accessToken =
+      Deno.env.get("MERCADOPAGO_ACCESS_TOKEN");
+
+    const siteUrl =
+      Deno.env.get("VIV_SITE_URL") ||
+      "https://viv-financas.vercel.app";
+
+    const checkoutTesteAtivo =
+      Deno.env.get("VIV_CHECKOUT_TESTE_ATIVO") === "true";
+
+    if (
+      !supabaseUrl ||
+      !supabaseAnonKey ||
+      !accessToken
+    ) {
+      console.error(
+        "Configuração incompleta do checkout.",
+      );
+
       return resposta(
-        { erro: "Configuração do Supabase incompleta" },
+        { erro: "Configuração incompleta" },
         503,
+      );
+    }
+
+    if (!checkoutTesteAtivo) {
+      return resposta(
+        {
+          erro:
+            "Checkout temporariamente desativado.",
+        },
+        503,
+      );
+    }
+
+    const authorization =
+      req.headers.get("Authorization");
+
+    if (!authorization) {
+      return resposta(
+        { erro: "Usuário não autenticado" },
+        401,
       );
     }
 
     const supabase = createClient(
       supabaseUrl,
-      anonKey,
+      supabaseAnonKey,
       {
         global: {
           headers: {
@@ -67,31 +89,33 @@ Deno.serve(async (req) => {
 
     const {
       data: { user },
-      error: erroUsuario,
+      error: userError,
     } = await supabase.auth.getUser();
 
-    if (erroUsuario || !user?.id || !user?.email) {
+    if (userError || !user) {
+      console.error(
+        "Falha ao validar usuário.",
+        userError,
+      );
+
       return resposta(
-        { erro: "Sessão inválida" },
+        { erro: "Usuário não autenticado" },
         401,
       );
     }
 
-    /*
-     * 2. Identifica o plano solicitado.
-     */
     let body: any = {};
 
     try {
       body = await req.json();
     } catch {
-      return resposta(
-        { erro: "Dados inválidos" },
-        400,
-      );
+      body = {};
     }
 
-    const plano = String(body?.plano || "");
+    const plano =
+      String(body?.plano || "")
+        .trim()
+        .toLowerCase();
 
     const planos: Record<
       string,
@@ -101,12 +125,14 @@ Deno.serve(async (req) => {
       }
     > = {
       mensal: {
-        titulo: "VIV IA Financeira - Plano Mensal",
+        titulo:
+          "VIV IA Financeira - Plano Mensal",
         valor: 20,
       },
 
       anual: {
-        titulo: "VIV IA Financeira - Plano Anual",
+        titulo:
+          "VIV IA Financeira - Plano Anual",
         valor: 180,
       },
     };
@@ -118,127 +144,66 @@ Deno.serve(async (req) => {
       );
     }
 
-    /*
-     * 3. Credenciais/configurações.
-     */
-    const accessToken =
-      Deno.env.get("MERCADOPAGO_ACCESS_TOKEN");
+    const configuracaoPlano =
+      planos[plano];
 
-    const site =
-      Deno.env.get("VIV_SITE_URL");
-
-    const checkoutTesteAtivo =
-      Deno.env.get("VIV_CHECKOUT_TESTE_ATIVO") ===
-      "true";
-
-    if (!accessToken) {
-      return resposta(
-        {
-          erro:
-            "MERCADOPAGO_ACCESS_TOKEN não configurado",
-        },
-        503,
-      );
-    }
-
-    if (!site || !/^https:\/\//i.test(site)) {
-      return resposta(
-        {
-          erro:
-            "VIV_SITE_URL precisa ser um endereço HTTPS válido",
-        },
-        503,
-      );
-    }
-
-    /*
-     * Por enquanto mantemos a trava de teste.
-     *
-     * Só depois de validarmos as credenciais e
-     * configurações do Mercado Pago vamos
-     * habilitar o fluxo definitivo de produção.
-     */
-    if (!checkoutTesteAtivo) {
-      return resposta(
-        {
-          erro:
-            "Checkout de teste está desativado",
-        },
-        503,
-      );
-    }
-
-    const item = planos[plano];
-
-    /*
-     * 4. Referência que permitirá ao webhook
-     * identificar usuário e plano.
-     */
     const externalReference =
       `${user.id}:${plano}:${crypto.randomUUID()}`;
 
-    const projectRef =
-      "gawtsodwexprxuokzvlm";
-
-    const notificationUrl =
-      `https://${projectRef}.supabase.co/functions/v1/viv-mercadopago-webhook`;
-
-    /*
-     * 5. Criação da preferência no Mercado Pago.
-     */
-    const respostaMercadoPago = await fetch(
-      "https://api.mercadopago.com/checkout/preferences",
-      {
-        method: "POST",
-
-        headers: {
-          Authorization:
-            `Bearer ${accessToken}`,
-
-          "Content-Type":
-            "application/json",
-
-          "X-Idempotency-Key":
-            crypto.randomUUID(),
+    const preferenceBody = {
+      items: [
+        {
+          title: configuracaoPlano.titulo,
+          quantity: 1,
+          currency_id: "BRL",
+          unit_price: configuracaoPlano.valor,
         },
+      ],
 
-        body: JSON.stringify({
-          items: [
-            {
-              title: item.titulo,
-              quantity: 1,
-              currency_id: "BRL",
-              unit_price: item.valor,
-            },
-          ],
-
-          payer: {
-            email: user.email,
-          },
-
-          external_reference:
-            externalReference,
-
-          notification_url:
-            notificationUrl,
-
-          back_urls: {
-            success: site,
-            pending: site,
-            failure: site,
-          },
-
-          auto_return: "approved",
-        }),
+      payer: {
+        email: user.email,
       },
-    );
+
+      external_reference:
+        externalReference,
+
+      back_urls: {
+        success:
+          `${siteUrl}/?pagamento=sucesso`,
+        pending:
+          `${siteUrl}/?pagamento=pendente`,
+        failure:
+          `${siteUrl}/?pagamento=falhou`,
+      },
+
+      auto_return: "approved",
+    };
+
+    const respostaMercadoPago =
+      await fetch(
+        "https://api.mercadopago.com/checkout/preferences",
+        {
+          method: "POST",
+
+          headers: {
+            Authorization:
+              `Bearer ${accessToken}`,
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify(
+            preferenceBody,
+          ),
+        },
+      );
 
     const data =
       await respostaMercadoPago.json();
 
     if (!respostaMercadoPago.ok) {
       console.error(
-        "Erro Mercado Pago:",
+        "Erro ao criar preferência no Mercado Pago.",
         data,
       );
 
@@ -246,44 +211,26 @@ Deno.serve(async (req) => {
         {
           erro:
             "Não foi possível criar o checkout",
-          detalhe:
-            data?.message ||
-            "Erro retornado pelo Mercado Pago",
+          detalhes: data,
         },
         502,
       );
     }
 
-    /*
-     * Enquanto estivermos em teste,
-     * aceitamos somente sandbox_init_point.
-     */
-    if (!data?.sandbox_init_point) {
+    if (!data.sandbox_init_point) {
       console.error(
-        "Checkout criado sem sandbox_init_point:",
-        {
-          preference_id: data?.id,
-        },
+        "Mercado Pago não retornou sandbox_init_point.",
+        data,
       );
 
       return resposta(
         {
           erro:
-            "Mercado Pago não retornou checkout de teste",
+            "Checkout de teste indisponível",
         },
         502,
       );
     }
-
-    console.log(
-      "Checkout VIV criado.",
-      {
-        usuarioId: user.id,
-        plano,
-        preferenceId: data.id,
-        modo: "sandbox",
-      },
-    );
 
     return resposta({
       url: data.sandbox_init_point,
@@ -292,12 +239,15 @@ Deno.serve(async (req) => {
     });
   } catch (erro) {
     console.error(
-      "Erro inesperado ao criar checkout:",
+      "Erro inesperado no checkout.",
       erro,
     );
 
     return resposta(
-      { erro: "Falha ao preparar checkout" },
+      {
+        erro:
+          "Erro interno ao criar checkout",
+      },
       500,
     );
   }
