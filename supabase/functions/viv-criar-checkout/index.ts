@@ -55,16 +55,6 @@ Deno.serve(async (req) => {
       );
     }
 
-    if (!checkoutTesteAtivo) {
-      return resposta(
-        {
-          erro:
-            "Checkout temporariamente desativado.",
-        },
-        503,
-      );
-    }
-
     const authorization =
       req.headers.get("Authorization");
 
@@ -217,26 +207,39 @@ Deno.serve(async (req) => {
       );
     }
 
-    if (!data.sandbox_init_point) {
-      console.error(
-        "Mercado Pago não retornou sandbox_init_point.",
-        data,
-      );
+    const checkoutUrl =
+  checkoutTesteAtivo
+    ? data.sandbox_init_point
+    : data.init_point;
 
-      return resposta(
-        {
-          erro:
-            "Checkout de teste indisponível",
-        },
-        502,
-      );
-    }
+if (!checkoutUrl) {
+  console.error(
+    "Mercado Pago não retornou URL de checkout.",
+    {
+      preference_id: data?.id,
+      modo: checkoutTesteAtivo
+        ? "sandbox"
+        : "producao",
+    },
+  );
 
-    return resposta({
-      url: data.sandbox_init_point,
-      preference_id: data.id,
-      modo: "sandbox",
-    });
+  return resposta(
+    {
+      erro: "Checkout indisponível",
+    },
+    502,
+  );
+}
+
+return resposta({
+  url: checkoutUrl,
+  preference_id: data.id,
+  modo: checkoutTesteAtivo
+    ? "sandbox"
+    : "producao",
+});
+
+
   } catch (erro) {
     console.error(
       "Erro inesperado no checkout.",
