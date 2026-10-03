@@ -104,6 +104,9 @@ export default function App({ pagina = "inicio", onPaginaChange }) {
     useState([]);
   const [metasDashboard, setMetasDashboard] =
     useState([]);
+  const [assinatura, setAssinatura] = useState(null);
+  const [carregandoAssinatura, setCarregandoAssinatura] =
+    useState(false);
 
   const [categoriaId, setCategoriaId] =
     useState("");
@@ -353,6 +356,45 @@ export default function App({ pagina = "inicio", onPaginaChange }) {
       setSalvando(false);
     }
   }
+
+  // Carregar assinatura
+  async function carregarAssinatura() {
+    if (!usuario) return;
+
+    setCarregandoAssinatura(true);
+
+    const { data, error } = await supabase
+      .from("viv_assinaturas")
+      .select(
+        "id, plano, status, valor, inicio_em, vencimento_em, origem"
+      )
+      .eq("usuario_id", usuario.id)
+      .eq("status", "ativa")
+      .order("vencimento_em", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      console.error(
+        "Erro ao carregar assinatura:",
+        error.message
+      );
+      setMensagem(
+        "Não foi possível carregar sua assinatura."
+      );
+      setAssinatura(null);
+    } else {
+      setAssinatura(data || null);
+    }
+
+    setCarregandoAssinatura(false);
+  }
+
+  useEffect(() => {
+    if (usuario && pagina === "assinatura") {
+      carregarAssinatura();
+    }
+  }, [usuario, pagina]);
 
   // Indicadores
   const entradas = movimentacoes
@@ -1016,6 +1058,91 @@ export default function App({ pagina = "inicio", onPaginaChange }) {
             categorias={categorias}
             movimentacoes={movimentacoes}
           />
+        )}
+
+        {/* MINHA ASSINATURA */}
+
+        {pagina === "assinatura" && (
+          <section className="vivi-bloco">
+            <div className="vivi-bloco-titulo">
+              <div>
+                <h2>Minha Assinatura</h2>
+                <p>
+                  Consulte os detalhes do seu plano VIV.
+                </p>
+              </div>
+            </div>
+
+            {carregandoAssinatura ? (
+              <p>Carregando assinatura...</p>
+            ) : assinatura ? (
+              <div className="vivi-assinatura-card">
+                <div>
+                  <small>PLANO ATUAL</small>
+                  <h2>
+                    VIV{" "}
+                    {assinatura.plano === "mensal"
+                      ? "Mensal"
+                      : assinatura.plano === "anual"
+                        ? "Anual"
+                        : assinatura.plano === "vitalicio"
+                          ? "Vitalício"
+                          : assinatura.plano}
+                  </h2>
+                </div>
+
+                <p>
+                  <strong>Status:</strong>{" "}
+                  {assinatura.status === "ativa"
+                    ? "Ativa"
+                    : assinatura.status}
+                </p>
+
+                <p>
+                  <strong>Valor:</strong>{" "}
+                  {moeda(assinatura.valor)}
+                </p>
+
+                <p>
+                  <strong>Ativada em:</strong>{" "}
+                  {formatarData(assinatura.inicio_em)}
+                </p>
+
+                <p>
+                  <strong>Válida até:</strong>{" "}
+                  {assinatura.plano === "vitalicio"
+                    ? "Vitalício"
+                    : formatarData(
+                        assinatura.vencimento_em
+                      )}
+                </p>
+
+                <button
+                  type="button"
+                  className="vivi-salvar"
+                  onClick={() => setPagina("assinaturas")}
+                >
+                  Renovar ou alterar plano
+                </button>
+              </div>
+            ) : (
+              <div className="vivi-assinatura-card">
+                <h2>Nenhuma assinatura ativa</h2>
+                <p>
+                  Escolha um plano para liberar os recursos
+                  da VIV.
+                </p>
+
+                <button
+                  type="button"
+                  className="vivi-salvar"
+                  onClick={() => setPagina("assinaturas")}
+                >
+                  Ver planos
+                </button>
+              </div>
+            )}
+          </section>
         )}
 
         {/* RELATÓRIOS */}

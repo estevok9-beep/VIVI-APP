@@ -1414,12 +1414,12 @@ function Viv() {
             className={`viv-nav-item ${
               tela === "assinaturas" ? "viv-nav-item--active" : ""
             }`}
-            title="Assinaturas"
-            aria-label="Assinaturas"
+            title="Minha Assinatura"
+            aria-label="Minha Assinatura"
             onClick={() => setTela("assinaturas")}
           >
             <MenuIcon name="admin" />
-            <span className="viv-sidebar-label">Assinaturas</span>
+            <span className="viv-sidebar-label">Minha Assinatura</span>
           </button>
 
           {administrador && (

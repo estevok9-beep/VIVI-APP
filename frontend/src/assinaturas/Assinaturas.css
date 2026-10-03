@@ -1,1 +1,464 @@
-.viv-planos{color:#edf8fc;padding:30px;max-width:1100px;margin:auto}.viv-planos header{text-align:center;margin-bottom:30px}.viv-planos-tag{color:#49dcbc;letter-spacing:.14em;font-size:12px;font-weight:800}.viv-planos h1{font-size:34px;margin:12px}.viv-planos header p{color:#b1c7d3;max-width:680px;margin:0 auto;line-height:1.6}.viv-planos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}.viv-plano{background:#122a3e;border:1px solid #315568;border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:15px}.viv-plano h2{margin:0}.viv-plano strong{font-size:31px;color:#50e3bb}.viv-plano strong small{font-size:14px;color:#b1c7d3}.viv-plano p{color:#c2d6df;line-height:1.5}.viv-plano button{margin-top:auto;background:#25c9a5;color:#062b26;border:0;border-radius:10px;padding:13px;font-weight:800;cursor:pointer}.viv-plano button:disabled{opacity:.5}.viv-plano-note{font-size:12px;color:#b3c8d2;line-height:1.6}.viv-planos-erro{background:#562c40;padding:14px;border-radius:10px}
+/* =========================================================
+   VIV IA FINANCEIRA — MINHA ASSINATURA
+   ========================================================= */
+
+.viv-planos {
+  width: min(100%, 980px);
+  margin: 0 auto;
+  padding: 42px 28px 60px;
+  box-sizing: border-box;
+  color: #f4f8ff;
+}
+
+/* =========================================================
+   CABEÇALHO
+   ========================================================= */
+
+.viv-planos > header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.viv-planos-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  margin-bottom: 10px;
+
+  color: #42e8d0;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.viv-planos > header h1 {
+  margin: 0;
+
+  color: #f7fbff;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+
+.viv-planos > header p {
+  max-width: 680px;
+  margin: 12px auto 0;
+
+  color: #91a9c1;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.viv-plano {
+  position: relative;
+
+  box-sizing: border-box;
+  padding: 24px;
+
+  overflow: hidden;
+
+  border: 1px solid rgba(62, 167, 225, 0.28);
+  border-radius: 18px;
+
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(0, 174, 255, 0.10),
+      transparent 38%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(12, 43, 67, 0.96),
+      rgba(7, 29, 49, 0.98)
+    );
+
+  box-shadow:
+    0 16px 42px rgba(0, 0, 0, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.viv-plano:hover {
+  transform: translateY(-2px);
+
+  border-color: rgba(53, 202, 255, 0.52);
+
+  box-shadow:
+    0 20px 48px rgba(0, 0, 0, 0.24),
+    0 0 25px rgba(0, 166, 255, 0.06);
+}
+
+.viv-plano h2 {
+  margin: 0 0 10px;
+
+  color: #f4f9ff;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.viv-plano > strong {
+  display: block;
+
+  margin: 5px 0 16px;
+
+  color: #38e5c4;
+  font-size: 31px;
+  font-weight: 850;
+  line-height: 1.1;
+
+  text-shadow:
+    0 0 18px rgba(56, 229, 196, 0.12);
+}
+
+.viv-plano > strong small {
+  margin-left: 4px;
+
+  color: #b4c6d8;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.viv-plano p {
+  margin: 8px 0;
+
+  color: #b1c3d4;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.viv-plano p b {
+  color: #edf8ff;
+  font-weight: 700;
+}
+
+.viv-plano-note {
+  display: block;
+
+  margin-top: 14px;
+
+  color: #7896b2;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   PLANO ATUAL
+   ========================================================= */
+
+.viv-plano-atual {
+  margin-bottom: 22px;
+  padding: 28px;
+
+  border-color: rgba(35, 225, 202, 0.50);
+
+  background:
+    radial-gradient(
+      circle at 90% 0%,
+      rgba(31, 228, 205, 0.15),
+      transparent 36%
+    ),
+    radial-gradient(
+      circle at 5% 100%,
+      rgba(29, 112, 255, 0.12),
+      transparent 38%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(8, 48, 69, 0.98),
+      rgba(5, 27, 48, 0.99)
+    );
+
+  box-shadow:
+    0 18px 48px rgba(0, 0, 0, 0.23),
+    0 0 30px rgba(23, 216, 205, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.viv-plano-atual::before {
+  content: "ATIVA";
+
+  position: absolute;
+  top: 20px;
+  right: 22px;
+
+  padding: 6px 11px;
+
+  border: 1px solid rgba(48, 235, 195, 0.38);
+  border-radius: 999px;
+
+  background: rgba(25, 219, 177, 0.09);
+  color: #45edc6;
+
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.4px;
+
+  box-shadow:
+    0 0 16px rgba(34, 229, 192, 0.08);
+}
+
+.viv-plano-atual h2 {
+  padding-right: 75px;
+
+  font-size: 25px;
+}
+
+.viv-plano-atual > strong {
+  font-size: 36px;
+}
+
+.viv-plano-atual p {
+  width: fit-content;
+  min-width: 260px;
+
+  padding: 7px 11px;
+  margin: 7px 0;
+
+  border: 1px solid rgba(77, 147, 195, 0.15);
+  border-radius: 8px;
+
+  background: rgba(1, 16, 30, 0.22);
+}
+
+/* =========================================================
+   PLANOS DISPONÍVEIS
+   ========================================================= */
+
+.viv-planos-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.viv-planos-grid .viv-plano {
+  display: flex;
+  min-height: 245px;
+  flex-direction: column;
+}
+
+.viv-planos-grid .viv-plano p {
+  flex: 1;
+}
+
+/* =========================================================
+   BOTÕES
+   ========================================================= */
+
+.viv-plano button {
+  width: 100%;
+  min-height: 48px;
+
+  margin-top: 17px;
+  padding: 12px 18px;
+
+  border: 0;
+  border-radius: 11px;
+
+  background:
+    linear-gradient(
+      100deg,
+      #25d9ba,
+      #24c8d9
+    );
+
+  color: #021c22;
+
+  font-size: 13px;
+  font-weight: 850;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 10px 24px rgba(27, 217, 190, 0.12);
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    filter 0.18s ease;
+}
+
+.viv-plano button:hover:not(:disabled) {
+  transform: translateY(-1px);
+
+  filter: brightness(1.06);
+
+  box-shadow:
+    0 13px 30px rgba(27, 217, 190, 0.20);
+}
+
+.viv-plano button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.viv-plano button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+/* =========================================================
+   ERROS
+   ========================================================= */
+
+.viv-planos-erro {
+  margin: 18px 0 0;
+  padding: 13px 15px;
+
+  border: 1px solid rgba(255, 92, 126, 0.35);
+  border-radius: 10px;
+
+  background: rgba(119, 38, 62, 0.45);
+  color: #ffc1cf;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   TEMA CLARO
+   ========================================================= */
+
+[data-theme="claro"] .viv-planos,
+.viv-tema-claro .viv-planos {
+  color: #132238;
+}
+
+[data-theme="claro"] .viv-planos > header h1,
+.viv-tema-claro .viv-planos > header h1 {
+  color: #132238;
+}
+
+[data-theme="claro"] .viv-planos > header p,
+.viv-tema-claro .viv-planos > header p {
+  color: #62758a;
+}
+
+[data-theme="claro"] .viv-plano,
+.viv-tema-claro .viv-plano {
+  border-color: rgba(38, 125, 185, 0.22);
+
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(0, 174, 255, 0.07),
+      transparent 38%
+    ),
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #f2f8fc
+    );
+
+  box-shadow:
+    0 14px 35px rgba(29, 62, 92, 0.09);
+}
+
+[data-theme="claro"] .viv-plano h2,
+.viv-tema-claro .viv-plano h2 {
+  color: #183047;
+}
+
+[data-theme="claro"] .viv-plano p,
+.viv-tema-claro .viv-plano p {
+  color: #62788d;
+}
+
+[data-theme="claro"] .viv-plano p b,
+.viv-tema-claro .viv-plano p b {
+  color: #17354c;
+}
+
+[data-theme="claro"] .viv-plano-atual,
+.viv-tema-claro .viv-plano-atual {
+  border-color: rgba(24, 190, 168, 0.42);
+
+  background:
+    radial-gradient(
+      circle at 90% 0%,
+      rgba(31, 228, 205, 0.09),
+      transparent 36%
+    ),
+    linear-gradient(
+      145deg,
+      #ffffff,
+      #edf9f8
+    );
+}
+
+[data-theme="claro"] .viv-plano-atual p,
+.viv-tema-claro .viv-plano-atual p {
+  background: rgba(224, 239, 246, 0.55);
+}
+
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .viv-planos {
+    padding: 30px 16px 45px;
+  }
+
+  .viv-planos > header {
+    margin-bottom: 22px;
+  }
+
+  .viv-planos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .viv-plano,
+  .viv-plano-atual {
+    padding: 20px;
+  }
+
+  .viv-plano-atual::before {
+    top: 17px;
+    right: 17px;
+  }
+
+  .viv-plano-atual p {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .viv-planos-grid .viv-plano {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .viv-planos {
+    padding-inline: 12px;
+  }
+
+  .viv-planos > header h1 {
+    font-size: 29px;
+  }
+
+  .viv-plano-atual h2 {
+    font-size: 21px;
+  }
+
+  .viv-plano-atual > strong {
+    font-size: 30px;
+  }
+
+  .viv-plano > strong {
+    font-size: 27px;
+  }
+}
