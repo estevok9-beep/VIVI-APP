@@ -30,6 +30,9 @@ Deno.serve(async (req) => {
     const supabaseAnonKey =
       Deno.env.get("SUPABASE_ANON_KEY");
 
+    const serviceRoleKey =
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+
     const accessToken =
       Deno.env.get("MERCADOPAGO_ACCESS_TOKEN");
 
@@ -43,6 +46,7 @@ Deno.serve(async (req) => {
     if (
       !supabaseUrl ||
       !supabaseAnonKey ||
+      !serviceRoleKey ||
       !accessToken
     ) {
       console.error(
@@ -55,6 +59,11 @@ Deno.serve(async (req) => {
       );
     }
 
+    /*
+     * Cliente autenticado como o usuário.
+     * Usado somente para validar quem está
+     * solicitando o checkout.
+     */
     const authorization =
       req.headers.get("Authorization");
 
@@ -65,7 +74,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    const supabase = createClient(
+    const supabaseUsuario = createClient(
       supabaseUrl,
       supabaseAnonKey,
       {
@@ -80,7 +89,7 @@ Deno.serve(async (req) => {
     const {
       data: { user },
       error: userError,
-    } = await supabase.auth.getUser();
+    } = await supabaseUsuario.auth.getUser();
 
     if (userError || !user) {
       console.error(
@@ -93,6 +102,15 @@ Deno.serve(async (req) => {
         401,
       );
     }
+
+    /*
+     * Cliente interno do servidor.
+     * A service role nunca é enviada ao frontend.
+     */
+    const supabaseAdmin = createClient(
+      supabaseUrl,
+      serviceRoleKey,
+    );
 
     let body: any = {};
 
@@ -137,6 +155,9 @@ Deno.serve(async (req) => {
     const configuracaoPlano =
       planos[plano];
 
+    /*
+     * Identificador único criado pela própria VIV.
+     */
     const externalReference =
       `${user.id}:${plano}:${crypto.randomUUID()}`;
 
@@ -157,6 +178,18 @@ Deno.serve(async (req) => {
       external_reference:
         externalReference,
 
+      /*
+       * Metadata adicional para identificar
+       * que a preferência foi criada pela VIV.
+       */
+      metadata: {
+        viv_app: true,
+        viv_usuario_id: user.id,
+        viv_plano: plano,
+        viv_external_reference:
+          externalReference,
+      },
+
       back_urls: {
         success:
           `${siteUrl}/?pagamento=sucesso`,
@@ -169,6 +202,9 @@ Deno.serve(async (req) => {
       auto_return: "approved",
     };
 
+    /*
+     * Criação da preferência no Mercado Pago.
+     */
     const respostaMercadoPago =
       await fetch(
         "https://api.mercadopago.com/checkout/preferences",
@@ -207,39 +243,113 @@ Deno.serve(async (req) => {
       );
     }
 
-    const checkoutUrl =
-  checkoutTesteAtivo
-    ? data.sandbox_init_point
-    : data.init_point;
+    /*
+     * O Mercado Pago precisa retornar
+     * obrigatoriamente o ID da preferência.
+     */
+    const preferenceId =
+      String(data?.id || "");
 
-if (!checkoutUrl) {
-  console.error(
-    "Mercado Pago não retornou URL de checkout.",
-    {
-      preference_id: data?.id,
+    if (!preferenceId) {
+      console.error(
+        "Mercado Pago não retornou preference_id.",
+        data,
+      );
+
+      return resposta(
+        {
+          erro:
+            "Preferência de pagamento inválida",
+        },
+        502,
+      );
+    }
+
+    /*
+     * Registra no banco que esta preferência
+     * foi criada oficialmente pela VIV.
+     */
+    const {
+      error: erroRegistroCheckout,
+    } = await supabaseAdmin
+      .from("vivi_checkouts")
+      .insert({
+        usuario_id: user.id,
+        preference_id: preferenceId,
+        external_reference:
+          externalReference,
+        plano,
+        valor: configuracaoPlano.valor,
+        status: "criado",
+        atualizado_em:
+          new Date().toISOString(),
+      });
+
+    if (erroRegistroCheckout) {
+      console.error(
+        "Erro ao registrar checkout VIV.",
+        erroRegistroCheckout,
+      );
+
+      /*
+       * Não entregamos a URL ao usuário se
+       * não conseguimos registrar a preferência.
+       *
+       * Assim nenhum checkout novo fica fora
+       * do controle interno da VIV.
+       */
+      return resposta(
+        {
+          erro:
+            "Não foi possível registrar o checkout",
+        },
+        500,
+      );
+    }
+
+    const checkoutUrl =
+      checkoutTesteAtivo
+        ? data.sandbox_init_point
+        : data.init_point;
+
+    if (!checkoutUrl) {
+      console.error(
+        "Mercado Pago não retornou URL de checkout.",
+        {
+          preference_id: preferenceId,
+          modo: checkoutTesteAtivo
+            ? "sandbox"
+            : "producao",
+        },
+      );
+
+      return resposta(
+        {
+          erro: "Checkout indisponível",
+        },
+        502,
+      );
+    }
+
+    console.log(
+      "Checkout VIV criado.",
+      {
+        usuarioId: user.id,
+        plano,
+        preferenceId,
+        modo: checkoutTesteAtivo
+          ? "sandbox"
+          : "producao",
+      },
+    );
+
+    return resposta({
+      url: checkoutUrl,
+      preference_id: preferenceId,
       modo: checkoutTesteAtivo
         ? "sandbox"
         : "producao",
-    },
-  );
-
-  return resposta(
-    {
-      erro: "Checkout indisponível",
-    },
-    502,
-  );
-}
-
-return resposta({
-  url: checkoutUrl,
-  preference_id: data.id,
-  modo: checkoutTesteAtivo
-    ? "sandbox"
-    : "producao",
-});
-
-
+    });
   } catch (erro) {
     console.error(
       "Erro inesperado no checkout.",

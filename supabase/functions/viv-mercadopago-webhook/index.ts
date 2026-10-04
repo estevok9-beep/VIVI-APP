@@ -36,8 +36,11 @@ async function validarAssinaturaMercadoPago(
   dataId: string,
   webhookSecret: string,
 ) {
-  const xSignature = req.headers.get("x-signature") || "";
-  const xRequestId = req.headers.get("x-request-id") || "";
+  const xSignature =
+    req.headers.get("x-signature") || "";
+
+  const xRequestId =
+    req.headers.get("x-request-id") || "";
 
   if (!xSignature || !xRequestId) {
     return false;
@@ -47,39 +50,89 @@ async function validarAssinaturaMercadoPago(
   let v1 = "";
 
   for (const parte of xSignature.split(",")) {
-    const [chave, valor] = parte.trim().split("=");
+    const [chave, valor] =
+      parte.trim().split("=");
 
-    if (chave === "ts") ts = valor || "";
-    if (chave === "v1") v1 = valor || "";
+    if (chave === "ts") {
+      ts = valor || "";
+    }
+
+    if (chave === "v1") {
+      v1 = valor || "";
+    }
   }
 
   if (!ts || !v1) {
     return false;
   }
 
+  /*
+   * Proteção contra replay.
+   */
+  const timestamp = Number(ts);
+
+  if (!Number.isFinite(timestamp)) {
+    console.error(
+      "Timestamp HMAC inválido.",
+    );
+
+    return false;
+  }
+
+  const agora = Date.now();
+
+  /*
+   * O timestamp pode chegar em segundos
+   * ou milissegundos.
+   */
+  const timestampMs =
+    timestamp < 10_000_000_000
+      ? timestamp * 1000
+      : timestamp;
+
+  /*
+   * Janela máxima aceita: 5 minutos.
+   */
+  const diferenca =
+    Math.abs(agora - timestampMs);
+
+  if (diferenca > 5 * 60 * 1000) {
+    console.error(
+      "Webhook rejeitado por timestamp expirado.",
+      {
+        diferencaMs: diferenca,
+      },
+    );
+
+    return false;
+  }
+
   const manifesto =
     `id:${dataId};request-id:${xRequestId};ts:${ts};`;
 
-  const chave = await crypto.subtle.importKey(
-    "raw",
-    encoder.encode(webhookSecret),
-    {
-      name: "HMAC",
-      hash: "SHA-256",
-    },
-    false,
-    ["sign"],
-  );
+  const chave =
+    await crypto.subtle.importKey(
+      "raw",
+      encoder.encode(webhookSecret),
+      {
+        name: "HMAC",
+        hash: "SHA-256",
+      },
+      false,
+      ["sign"],
+    );
 
-  const assinatura = await crypto.subtle.sign(
-    "HMAC",
-    chave,
-    encoder.encode(manifesto),
-  );
+  const assinatura =
+    await crypto.subtle.sign(
+      "HMAC",
+      chave,
+      encoder.encode(manifesto),
+    );
 
-  const hashCalculado = bytesParaHex(
-    new Uint8Array(assinatura),
-  );
+  const hashCalculado =
+    bytesParaHex(
+      new Uint8Array(assinatura),
+    );
 
   return comparacaoSegura(
     hashCalculado.toLowerCase(),
@@ -87,24 +140,35 @@ async function validarAssinaturaMercadoPago(
   );
 }
 
-function adicionarMeses(data: Date, meses: number) {
+function adicionarMeses(
+  data: Date,
+  meses: number,
+) {
   const resultado = new Date(data);
 
-  const diaOriginal = resultado.getUTCDate();
+  const diaOriginal =
+    resultado.getUTCDate();
 
   resultado.setUTCDate(1);
-  resultado.setUTCMonth(resultado.getUTCMonth() + meses);
 
-  const ultimoDia = new Date(
-    Date.UTC(
-      resultado.getUTCFullYear(),
-      resultado.getUTCMonth() + 1,
-      0,
-    ),
-  ).getUTCDate();
+  resultado.setUTCMonth(
+    resultado.getUTCMonth() + meses,
+  );
+
+  const ultimoDia =
+    new Date(
+      Date.UTC(
+        resultado.getUTCFullYear(),
+        resultado.getUTCMonth() + 1,
+        0,
+      ),
+    ).getUTCDate();
 
   resultado.setUTCDate(
-    Math.min(diaOriginal, ultimoDia),
+    Math.min(
+      diaOriginal,
+      ultimoDia,
+    ),
   );
 
   return resultado;
@@ -112,28 +176,42 @@ function adicionarMeses(data: Date, meses: number) {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers });
+    return new Response(
+      null,
+      { headers },
+    );
   }
 
   if (req.method !== "POST") {
     return resposta(
-      { erro: "Método não permitido" },
+      {
+        erro:
+          "Método não permitido",
+      },
       405,
     );
   }
 
   try {
     const accessToken =
-      Deno.env.get("MERCADOPAGO_ACCESS_TOKEN");
+      Deno.env.get(
+        "MERCADOPAGO_ACCESS_TOKEN",
+      );
 
     const webhookSecret =
-      Deno.env.get("MERCADOPAGO_WEBHOOK_SECRET");
+      Deno.env.get(
+        "MERCADOPAGO_WEBHOOK_SECRET",
+      );
 
     const supabaseUrl =
-      Deno.env.get("SUPABASE_URL");
+      Deno.env.get(
+        "SUPABASE_URL",
+      );
 
     const serviceRoleKey =
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+      Deno.env.get(
+        "SUPABASE_SERVICE_ROLE_KEY",
+      );
 
     if (
       !accessToken ||
@@ -146,17 +224,22 @@ Deno.serve(async (req) => {
       );
 
       return resposta(
-        { erro: "Configuração incompleta" },
+        {
+          erro:
+            "Configuração incompleta",
+        },
         503,
       );
     }
 
-    const url = new URL(req.url);
+    const url =
+      new URL(req.url);
 
     let body: any = {};
 
     try {
-      body = await req.json();
+      body =
+        await req.json();
     } catch {
       body = {};
     }
@@ -175,11 +258,10 @@ Deno.serve(async (req) => {
       body?.topic ||
       "";
 
-    /*
-     * Mercado Pago pode enviar outros tipos
-     * de notificação. Só processamos payment.
-     */
-    if (tipo && tipo !== "payment") {
+    if (
+      tipo &&
+      tipo !== "payment"
+    ) {
       return resposta({
         recebido: true,
         ignorado: true,
@@ -189,11 +271,17 @@ Deno.serve(async (req) => {
 
     if (!dataId) {
       return resposta(
-        { erro: "ID do pagamento ausente" },
+        {
+          erro:
+            "ID do pagamento ausente",
+        },
         400,
       );
     }
 
+    /*
+     * Validação HMAC.
+     */
     const assinaturaValida =
       await validarAssinaturaMercadoPago(
         req,
@@ -204,30 +292,34 @@ Deno.serve(async (req) => {
     if (!assinaturaValida) {
       console.error(
         "Assinatura HMAC inválida.",
-        { dataId },
+        {
+          dataId,
+        },
       );
 
       return resposta(
-        { erro: "Assinatura inválida" },
+        {
+          erro:
+            "Assinatura inválida",
+        },
         401,
       );
     }
 
     /*
-     * Nunca confiamos apenas no conteúdo
-     * recebido pelo webhook.
-     *
-     * Consultamos o pagamento diretamente
-     * na API oficial do Mercado Pago.
+     * Consulta o pagamento diretamente
+     * na API do Mercado Pago.
      */
-    const respostaPagamento = await fetch(
-      `https://api.mercadopago.com/v1/payments/${encodeURIComponent(dataId)}`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
+    const respostaPagamento =
+      await fetch(
+        `https://api.mercadopago.com/v1/payments/${encodeURIComponent(dataId)}`,
+        {
+          headers: {
+            Authorization:
+              `Bearer ${accessToken}`,
+          },
         },
-      },
-    );
+      );
 
     const pagamento =
       await respostaPagamento.json();
@@ -247,25 +339,178 @@ Deno.serve(async (req) => {
       );
     }
 
+    const pagamentoId =
+      String(pagamento.id);
+
+    const statusPagamento =
+      String(
+        pagamento.status || "",
+      );
+
+    const supabase =
+      createClient(
+        supabaseUrl,
+        serviceRoleKey,
+      );
+
     /*
-     * Pagamentos pendentes/rejeitados não
-     * liberam assinatura.
+     * ESTORNO / CHARGEBACK
+     *
+     * Mantemos o processamento existente
+     * através da função PostgreSQL.
      */
-    if (pagamento.status !== "approved") {
+    if (
+      statusPagamento ===
+        "refunded" ||
+      statusPagamento ===
+        "charged_back"
+    ) {
+      const {
+        data: resultadoEstorno,
+        error: erroEstorno,
+      } = await supabase.rpc(
+        "vivi_processar_estorno",
+        {
+          p_pagamento_id:
+            pagamentoId,
+
+          p_status_pagamento:
+            statusPagamento,
+        },
+      );
+
+      if (erroEstorno) {
+        console.error(
+          "Erro ao processar estorno da assinatura.",
+          erroEstorno,
+        );
+
+        return resposta(
+          {
+            erro:
+              "Erro ao processar estorno",
+          },
+          500,
+        );
+      }
+
+      console.log(
+        "Pagamento VIV estornado.",
+        {
+          pagamentoId,
+          status:
+            statusPagamento,
+          resultado:
+            resultadoEstorno,
+        },
+      );
+
       return resposta({
         recebido: true,
-        pagamento_id: String(pagamento.id),
-        status: pagamento.status,
-        assinatura_ativada: false,
+        pagamento_id:
+          pagamentoId,
+        status:
+          statusPagamento,
+        assinatura_ativada:
+          false,
+        assinatura_estornada:
+          true,
+        resultado:
+          resultadoEstorno,
       });
     }
 
-    const referencia =
-      String(
-        pagamento.external_reference || "",
+    /*
+     * Pagamentos que ainda não foram
+     * aprovados não ativam assinatura.
+     */
+    if (
+      statusPagamento !==
+        "approved"
+    ) {
+      return resposta({
+        recebido: true,
+        pagamento_id:
+          pagamentoId,
+        status:
+          statusPagamento,
+        assinatura_ativada:
+          false,
+      });
+    }
+
+    /*
+     * IMPORTANTE:
+     *
+     * Primeiro verificamos se esse pagamento
+     * já foi processado anteriormente.
+     *
+     * Isso mantém compatibilidade com os
+     * pagamentos realizados antes da criação
+     * da tabela vivi_checkouts.
+     */
+    const {
+      data: assinaturaExistente,
+      error: erroConsultaPagamento,
+    } = await supabase
+      .from("viv_assinaturas")
+      .select(
+        "id, status, status_pagamento, vencimento_em",
+      )
+      .eq(
+        "pagamento_id",
+        pagamentoId,
+      )
+      .maybeSingle();
+
+    if (erroConsultaPagamento) {
+      console.error(
+        "Erro ao verificar pagamento existente.",
+        erroConsultaPagamento,
       );
 
-    const partes = referencia.split(":");
+      return resposta(
+        {
+          erro:
+            "Erro interno",
+        },
+        500,
+      );
+    }
+
+    if (assinaturaExistente) {
+      /*
+       * Pagamentos antigos ou notificações
+       * repetidas continuam sendo reconhecidos
+       * normalmente.
+       */
+      return resposta({
+        recebido: true,
+        pagamento_id:
+          pagamentoId,
+        assinatura_ativada:
+          assinaturaExistente.status ===
+          "ativa",
+        ja_processado: true,
+        status_pagamento:
+          assinaturaExistente
+            .status_pagamento,
+      });
+    }
+
+    /*
+     * A partir daqui é obrigatória
+     * a existência de um checkout
+     * criado oficialmente pela VIV.
+     */
+    const referencia =
+      String(
+        pagamento.external_reference ||
+        "",
+      );
+
+    const partes =
+      referencia.split(":");
 
     if (partes.length !== 3) {
       console.error(
@@ -274,13 +519,19 @@ Deno.serve(async (req) => {
       );
 
       return resposta(
-        { erro: "Referência inválida" },
+        {
+          erro:
+            "Referência inválida",
+        },
         400,
       );
     }
 
-    const [usuarioId, plano, identificador] =
-      partes;
+    const [
+      usuarioId,
+      plano,
+      identificador,
+    ] = partes;
 
     const uuidRegex =
       /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -289,8 +540,15 @@ Deno.serve(async (req) => {
       !uuidRegex.test(usuarioId) ||
       !uuidRegex.test(identificador)
     ) {
+      console.error(
+        "UUID inválido na referência.",
+      );
+
       return resposta(
-        { erro: "Referência inválida" },
+        {
+          erro:
+            "Referência inválida",
+        },
         400,
       );
     }
@@ -313,26 +571,41 @@ Deno.serve(async (req) => {
       },
     };
 
-    if (!Object.hasOwn(planos, plano)) {
+    if (
+      !Object.hasOwn(
+        planos,
+        plano,
+      )
+    ) {
       return resposta(
-        { erro: "Plano inválido" },
+        {
+          erro:
+            "Plano inválido",
+        },
         400,
       );
     }
 
-    const configuracaoPlano = planos[plano];
+    const configuracaoPlano =
+      planos[plano];
 
     const moeda =
-      String(pagamento.currency_id || "");
+      String(
+        pagamento.currency_id ||
+        "",
+      );
 
     const valor =
-      Number(pagamento.transaction_amount);
+      Number(
+        pagamento.transaction_amount,
+      );
 
     if (
       moeda !== "BRL" ||
       !Number.isFinite(valor) ||
       Math.abs(
-        valor - configuracaoPlano.valor,
+        valor -
+          configuracaoPlano.valor,
       ) > 0.01
     ) {
       console.error(
@@ -353,68 +626,152 @@ Deno.serve(async (req) => {
       );
     }
 
-    const supabase = createClient(
-      supabaseUrl,
-      serviceRoleKey,
-    );
-
-    const pagamentoId =
-      String(pagamento.id);
-
     /*
-     * Proteção contra notificações repetidas.
+     * PROVA DE ORIGEM DO CHECKOUT
+     *
+     * O external_reference precisa existir
+     * na tabela criada pelo servidor da VIV.
      */
     const {
-      data: assinaturaExistente,
-      error: erroConsultaPagamento,
+      data: checkout,
+      error: erroCheckout,
     } = await supabase
-      .from("viv_assinaturas")
-      .select("id, vencimento_em")
-      .eq("pagamento_id", pagamentoId)
+      .from("vivi_checkouts")
+      .select(
+        "id, usuario_id, preference_id, external_reference, plano, valor, status, pagamento_id",
+      )
+      .eq(
+        "external_reference",
+        referencia,
+      )
       .maybeSingle();
 
-    if (erroConsultaPagamento) {
+    if (erroCheckout) {
       console.error(
-        "Erro ao verificar pagamento existente.",
-        erroConsultaPagamento,
+        "Erro ao validar checkout VIV.",
+        erroCheckout,
       );
 
       return resposta(
-        { erro: "Erro interno" },
+        {
+          erro:
+            "Erro ao validar checkout",
+        },
         500,
       );
     }
 
-    if (assinaturaExistente) {
-      return resposta({
-        recebido: true,
-        pagamento_id: pagamentoId,
-        assinatura_ativada: true,
-        ja_processado: true,
-      });
+    if (!checkout) {
+      console.error(
+        "Pagamento rejeitado: checkout não registrado pela VIV.",
+        {
+          pagamentoId,
+          referencia,
+        },
+      );
+
+      return resposta(
+        {
+          erro:
+            "Checkout não reconhecido",
+        },
+        403,
+      );
     }
 
-    const agora = new Date();
+    /*
+     * Confere se os dados do pagamento
+     * são exatamente os dados registrados
+     * quando o checkout foi criado.
+     */
+    if (
+      checkout.usuario_id !==
+        usuarioId ||
+      checkout.plano !==
+        plano ||
+      Math.abs(
+        Number(checkout.valor) -
+          configuracaoPlano.valor,
+      ) > 0.01
+    ) {
+      console.error(
+        "Pagamento incompatível com checkout VIV.",
+        {
+          pagamentoId,
+          checkoutId:
+            checkout.id,
+        },
+      );
+
+      return resposta(
+        {
+          erro:
+            "Checkout incompatível",
+        },
+        403,
+      );
+    }
 
     /*
-     * Se o usuário já possui assinatura ativa,
-     * a renovação começa no vencimento atual.
+     * Um checkout que já possui outro
+     * pagamento não pode ser reutilizado.
+     */
+    if (
+      checkout.pagamento_id &&
+      checkout.pagamento_id !==
+        pagamentoId
+    ) {
+      console.error(
+        "Checkout já utilizado por outro pagamento.",
+        {
+          checkoutId:
+            checkout.id,
+          pagamentoId,
+        },
+      );
+
+      return resposta(
+        {
+          erro:
+            "Checkout já utilizado",
+        },
+        409,
+      );
+    }
+
+    const agora =
+      new Date();
+
+    /*
+     * Se já existe assinatura ativa,
+     * a renovação começa no maior
+     * vencimento atual.
      */
     const {
       data: assinaturaAtual,
       error: erroAssinaturaAtual,
     } = await supabase
       .from("viv_assinaturas")
-      .select("vencimento_em")
-      .eq("usuario_id", usuarioId)
-      .eq("status", "ativa")
+      .select(
+        "vencimento_em",
+      )
+      .eq(
+        "usuario_id",
+        usuarioId,
+      )
+      .eq(
+        "status",
+        "ativa",
+      )
       .gt(
         "vencimento_em",
         agora.toISOString(),
       )
       .order(
         "vencimento_em",
-        { ascending: false },
+        {
+          ascending: false,
+        },
       )
       .limit(1)
       .maybeSingle();
@@ -426,7 +783,10 @@ Deno.serve(async (req) => {
       );
 
       return resposta(
-        { erro: "Erro interno" },
+        {
+          erro:
+            "Erro interno",
+        },
         500,
       );
     }
@@ -434,59 +794,124 @@ Deno.serve(async (req) => {
     const inicioRenovacao =
       assinaturaAtual?.vencimento_em
         ? new Date(
-            assinaturaAtual.vencimento_em,
+            assinaturaAtual
+              .vencimento_em,
           )
         : agora;
 
-    const vencimento = adicionarMeses(
-      inicioRenovacao,
-      configuracaoPlano.meses,
-    );
+    const vencimento =
+      adicionarMeses(
+        inicioRenovacao,
+        configuracaoPlano.meses,
+      );
 
+    /*
+     * O preference_id agora vem do
+     * registro interno da VIV.
+     */
     const preferenciaId =
-      pagamento?.metadata?.preference_id ||
-      pagamento?.order?.id ||
-      null;
+      checkout.preference_id;
 
+    /*
+     * Registra a assinatura.
+     */
     const {
       data: novaAssinatura,
       error: erroInsercao,
     } = await supabase
       .from("viv_assinaturas")
       .insert({
-        usuario_id: usuarioId,
+        usuario_id:
+          usuarioId,
+
         plano,
-        status: "ativa",
-        pagamento_id: pagamentoId,
-        preferencia_id: preferenciaId,
+
+        status:
+          "ativa",
+
+        status_pagamento:
+          "approved",
+
+        pagamento_id:
+          pagamentoId,
+
+        preferencia_id:
+          preferenciaId,
+
         valor:
           configuracaoPlano.valor,
-        inicio_em: agora.toISOString(),
+
+        inicio_em:
+          agora.toISOString(),
+
         vencimento_em:
           vencimento.toISOString(),
+
         atualizado_em:
           agora.toISOString(),
-        origem: "mercadopago",
+
+        origem:
+          "mercadopago",
       })
       .select(
-        "id, plano, status, vencimento_em",
+        "id, plano, status, status_pagamento, vencimento_em",
       )
       .single();
 
     if (erroInsercao) {
-      /*
-       * Se duas notificações do mesmo pagamento
-       * chegarem simultaneamente, uma proteção
-       * UNIQUE no banco impedirá duplicidade.
-       */
       console.error(
         "Erro ao registrar assinatura.",
         erroInsercao,
       );
 
       return resposta(
-        { erro: "Erro ao registrar assinatura" },
+        {
+          erro:
+            "Erro ao registrar assinatura",
+        },
         500,
+      );
+    }
+
+    /*
+     * Marca o checkout como efetivamente pago
+     * e vincula o ID real do pagamento.
+     */
+    const {
+      error: erroAtualizarCheckout,
+    } = await supabase
+      .from("vivi_checkouts")
+      .update({
+        status:
+          "pago",
+
+        pagamento_id:
+          pagamentoId,
+
+        atualizado_em:
+          agora.toISOString(),
+      })
+      .eq(
+        "id",
+        checkout.id,
+      );
+
+    if (erroAtualizarCheckout) {
+      /*
+       * A assinatura já foi registrada.
+       * Não apagamos nem adicionamos período
+       * novamente. Registramos o problema
+       * para auditoria.
+       */
+      console.error(
+        "Assinatura criada, mas houve erro ao atualizar checkout.",
+        {
+          pagamentoId,
+          checkoutId:
+            checkout.id,
+          erro:
+            erroAtualizarCheckout,
+        },
       );
     }
 
@@ -496,19 +921,34 @@ Deno.serve(async (req) => {
         usuarioId,
         plano,
         pagamentoId,
+        preferenceId:
+          preferenciaId,
+        checkoutId:
+          checkout.id,
         vencimento:
-          novaAssinatura.vencimento_em,
+          novaAssinatura
+            .vencimento_em,
       },
     );
 
     return resposta({
       recebido: true,
-      pagamento_id: pagamentoId,
-      assinatura_ativada: true,
+      pagamento_id:
+        pagamentoId,
+      preference_id:
+        preferenciaId,
+      checkout_validado:
+        true,
+      assinatura_ativada:
+        true,
       plano:
         novaAssinatura.plano,
+      status_pagamento:
+        novaAssinatura
+          .status_pagamento,
       vencimento_em:
-        novaAssinatura.vencimento_em,
+        novaAssinatura
+          .vencimento_em,
     });
   } catch (erro) {
     console.error(
@@ -517,7 +957,10 @@ Deno.serve(async (req) => {
     );
 
     return resposta(
-      { erro: "Erro interno do webhook" },
+      {
+        erro:
+          "Erro interno do webhook",
+      },
       500,
     );
   }
