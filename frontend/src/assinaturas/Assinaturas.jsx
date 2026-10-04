@@ -6,13 +6,13 @@ const planos = [
   {
     id: "mensal",
     titulo: "VIV Mensal",
-    valor: "R$ 20,00",
+    valor: "R$ 14,90",
     periodo: "/ mês",
   },
   {
     id: "anual",
     titulo: "VIV Anual",
-    valor: "R$ 180,00",
+    valor: "R$ 149,90",
     periodo: "/ ano",
   },
 ];
